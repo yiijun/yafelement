@@ -1,12 +1,11 @@
 <?php
 /**
  * User: tangyijun
- * Date: 2019-02-13
- * Time: 16:34
+ * Date: 2019-11-28
+ * Time: 14:52
  */
-namespace Libs\Cache;
-class Cache
-{
+namespace Libs;
+class Instance{
     /**
      * @param string $name
      * @param string $key

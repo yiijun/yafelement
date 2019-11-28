@@ -4,11 +4,10 @@
  * Date: 2019-09-29
  * Time: 14:53
  */
-namespace Libs\Apcu;
+namespace Libs\Cache;
+use Libs\Instance;
 
-use Libs\Cache\Cache;
-
-class Apcu extends Cache
+class Apcu extends Instance
 {
     public  function get( $key ) {
         if ( !function_exists('apcu_fetch') ) return;
