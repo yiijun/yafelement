@@ -7,8 +7,9 @@
 
 **域名配置(host 文件)**
 
-127.0.0.1      admin.yaf-element.com
-127.0.0.1      home.yaf-element.com
+> 127.0.0.1      admin.yaf-element.com
+
+> 127.0.0.1      home.yaf-element.com
 
 
 **虚拟主机配置**
