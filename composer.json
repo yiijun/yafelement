@@ -1,0 +1,14 @@
+{
+  "authors": [
+    {
+      "name": "tangyijun",
+      "email": "251784425@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.4"
+  },
+  "autoload": {
+    "psr-4": {"Libs\\": "libs/"}
+  }
+}
