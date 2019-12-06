@@ -1,8 +1,107 @@
-<?php Yaf\Loader::import(\Yaf\View\Simple::getScriptPath().'/head.phtml');?>
-<div id="app" v-cloak>
-    <el-button @click="visible = true">Button</el-button>
-    <el-dialog :visible.sync="visible" title="Hello world">
-        <p>Try Element</p>
-    </el-dialog>
-</div>
-<?php Yaf\Loader::import(\Yaf\View\Simple::getScriptPath().'/foot.phtml');?>
+<?php Yaf\Loader::import(__DIR__.'/../head.phtml');?>
+<el-main>
+    <el-breadcrumb separator="/">
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
+        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+    </el-breadcrumb>
+
+    <div class="table-list">
+        <el-table :data="tableData" style="width: 100%">
+            <el-table-column prop="date" label="日期">
+            </el-table-column>
+            <el-table-column label="配送信息">
+                <el-table-column
+                        prop="name"
+                        label="姓名"
+                        >
+                </el-table-column>
+                <el-table-column label="地址">
+                    <el-table-column
+                            prop="province"
+                            label="省份"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="city"
+                            label="市区"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="address"
+                            label="地址"
+                            >
+                    </el-table-column>
+                    <el-table-column
+                            prop="zip"
+                            label="邮编"
+                            >
+                    </el-table-column>
+                </el-table-column>
+            </el-table-column>
+        </el-table>
+    </div>
+</el-main>
+<?php Yaf\Loader::import(__DIR__.'/../foot.phtml');?>
+<script>
+    Vue.prototype.$ELEMENT = { size: 'mini', zIndex: 3000 };
+    var vm = new Vue({
+        el: '#app',
+        data:{
+            tableData: [{
+                date: '2016-05-03',
+                name: '王小虎',
+                province: '上海',
+                city: '普陀区',
+                address: '上海市普陀区金沙江路 1518 弄',
+                zip: 200333
+            }, {
+                date: '2016-05-02',
+                name: '王小虎',
+                province: '上海',
+                city: '普陀区',
+                address: '上海市普陀区金沙江路 1518 弄',
+                zip: 200333
+            }, {
+                date: '2016-05-04',
+                name: '王小虎',
+                province: '上海',
+                city: '普陀区',
+                address: '上海市普陀区金沙江路 1518 弄',
+                zip: 200333
+            }, {
+                date: '2016-05-01',
+                name: '王小虎',
+                province: '上海',
+                city: '普陀区',
+                address: '上海市普陀区金沙江路 1518 弄',
+                zip: 200333
+            }, {
+                date: '2016-05-08',
+                name: '王小虎',
+                province: '上海',
+                city: '普陀区',
+                address: '上海市普陀区金沙江路 1518 弄',
+                zip: 200333
+            }, {
+                date: '2016-05-06',
+                name: '王小虎',
+                province: '上海',
+                city: '普陀区',
+                address: '上海市普陀区金沙江路 1518 弄',
+                zip: 200333
+            }, {
+                date: '2016-05-07',
+                name: '王小虎',
+                province: '上海',
+                city: '普陀区',
+                address: '上海市普陀区金沙江路 1518 弄',
+                zip: 200333
+            }]
+        },
+        methods: {
+
+        }
+    })
+</script>
