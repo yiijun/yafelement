@@ -1,0 +1,8 @@
+<?php Yaf\Loader::import(\Yaf\View\Simple::getScriptPath().'/head.phtml');?>
+<div id="app" v-cloak>
+    <el-button @click="visible = true">Button</el-button>
+    <el-dialog :visible.sync="visible" title="Hello world">
+        <p>Try Element</p>
+    </el-dialog>
+</div>
+<?php Yaf\Loader::import(\Yaf\View\Simple::getScriptPath().'/foot.phtml');?>
