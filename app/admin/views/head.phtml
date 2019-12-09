@@ -10,9 +10,22 @@
 <div id="app" v-cloak>
     <el-container class="wrapper">
         <el-header>
-            <div class="logo">hello</div>
+            <div class="logo">
+                <img src="/static/images/logo.png" height="30" style="position: absolute; top: 15px; left: 10px">全领小程序后台
+            </div>
             <div class="head-right">
-                <div class="search">33333</div>
+                <div class="search">
+                    <span style="color: #ccc">文档中心</span>
+                    <el-dropdown trigger="click">
+                          <span class="el-dropdown-link el-icon-user">
+                            admin<i class="el-icon-arrow-down el-icon--right"></i>
+                          </span>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item icon="el-icon-plus">黄金糕</el-dropdown-item>
+                            <el-dropdown-item icon="el-icon-circle-plus">退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </div>
             </div>
         </el-header>
 
