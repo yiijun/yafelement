@@ -4,7 +4,11 @@
  * Date: 2019-11-28
  * Time: 11:49
  */
-class IndexController extends BaseController
+class IndexController extends \Base\BaseController
 {
 
+    public function indexAction()
+    {
+
+    }
 }

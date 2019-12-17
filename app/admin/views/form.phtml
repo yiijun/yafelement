@@ -1,0 +1,9 @@
+<el-dialog  :visible.sync="dialog">
+    <el-form :model="form" :rules="rules" ref="form" label-width="<?php echo $view['label-width']?>">
+        <?php echo $view['html']?>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="dialog = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+    </div>
+</el-dialog>

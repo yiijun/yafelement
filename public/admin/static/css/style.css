@@ -1,6 +1,6 @@
-body,html,#app{height:100%;}
+body,html,#app{height:100%; font-size: 12px;font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;}
 body{padding:0px;margin:0px;}
-.el-header, .el-footer {line-height: 60px;height: 60px;background-color: #fff;position: relative;z-index: 10;max-width: 100%;}
+.el-header, .el-footer {line-height: 60px;height: 60px;background-color: #fff;position: relative;z-index: 10;max-width: 100%; font-size: 12px}
 .el-header{-webkit-box-shadow: 0 2px 8px #f0f1f2;box-shadow: 0 2px 8px #f0f1f2;}
 .el-header{padding: 0 !important; display: flex; position: relative;flex-direction: row;}
 .logo{width:170px;padding-left: 55px;white-space: nowrap;text-decoration: none;line-height: 60px;overflow: hidden;height: 60px;float: left;position: relative}
