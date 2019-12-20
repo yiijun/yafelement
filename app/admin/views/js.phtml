@@ -3,16 +3,43 @@
         el: '#app',
         data:<?php echo json_encode($view['form']);?>,
         methods: {
-            submitForm(formName) {
+            submitForm:function(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        $.post('/<?php echo $controller."/post"?>', vm.form).done(function(response) {
+                            if(200 == response.code){
+                                vm.form = response.data.form //重载视图，使页面得值清空
+                                vm.$message.success(response.msg);
+                                vm.init();
+                                vm.dialog = false
+                            }else{
+                                vm.$message.error(response.msg);
+                            }
+                        })
                     } else {
-                        console.log('error submit!!');
                         return false;
                     }
                 });
             },
-        }
+            saveForm:function () {
+
+            },
+            deleteForm:function () {
+
+            },
+            init:function (page) {
+                $.post('/<?php echo $controller."/index"?>', {page:page}).done(function(response) {
+                    if(200 == response.code){
+                        vm.table = response.data.list
+                        vm.total = response.data.total
+                    }else{
+                        vm.$message.error(response.msg);
+                    }
+                })
+            },
+        },
+        mounted:function () {
+            this.init(0);
+        },
     })
 </script>

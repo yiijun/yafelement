@@ -9,8 +9,10 @@ class BaseController extends \Yaf\Controller_Abstract
 {
     public $model;
 
+    public $controller;
     public function init()
     {
-        $this->model = $this->getRequest()->controller.'Model';
+        $this->controller = $this->getRequest()->controller;
+        $this->model = $this->controller.'Model';
     }
 }

@@ -1,0 +1,23 @@
+<template>
+    <el-table :data="<?php echo $view['search']?>">
+        <?php echo $view['table']?>
+        <el-table-column align="right">
+            <template slot="header" slot-scope="scope">
+                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" style="max-width: 300px"/>
+            </template>
+            <template slot-scope="scope">
+                <el-button size="mini" @click="saveForm(scope.$index, scope.row)">Edit</el-button>
+                <el-button size="mini" type="danger" @click="deleteForm(scope.$index, scope.row)">Delete</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <!--分页组件-->
+    <div class="block" style="margin-top: 15px; float: right">
+        <el-pagination
+                :page-size="20"
+                @current-change="init"
+                layout="prev, pager, next"
+                :total="total">
+        </el-pagination>
+    </div>
+</template>

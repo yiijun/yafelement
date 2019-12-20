@@ -17,7 +17,8 @@ class RoleModel extends AbstractModel
                 ],
                 'value' => '',
                 'title' => '角色名称',
-                'key' => 'role_name'
+                'key' => 'role_name',
+                'show' => [] //1=>'正常',2=>'禁用'
             ],
             [
                 'type' => 'textarea',
@@ -26,10 +27,12 @@ class RoleModel extends AbstractModel
                 ],
                 'value' => '',
                 'title' => '角色描述',
-                'key' => 'desc'
+                'key' => 'desc',
+                'show' => []
             ]
         ],
-        'dialog' => true,
-        'label-width' => '80px'
+        'dialog' => false,
+        'label-width' => '80px',
+        'search' => ['role_name'],//用于搜索
     ];
 }

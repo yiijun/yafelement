@@ -25,7 +25,7 @@ class Pdo extends Instance
             $conf['passwd'],
             $conf['options']
         );
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE,\PDO::ERRMODE_EXCEPTION);
     }
 
     /**

@@ -34,7 +34,6 @@ class ViewPlugin extends Yaf\Plugin_Abstract {
 
     public function preResponse(Yaf\Request_Abstract $request, Yaf\Response_Abstract $response)
     {
-        $html =  11122222;
-        return $html;
+
     }
 }
