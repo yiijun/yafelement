@@ -10,7 +10,7 @@ use Libs\Instance;
 class Apcu extends Instance
 {
     public  function get( $key ) {
-        if ( !function_exists('apcu_fetch') ) return;
+        if (!function_exists('apcu_fetch')) return;
         $data = apcu_fetch( $key );
         return $data;
     }
@@ -22,7 +22,7 @@ class Apcu extends Instance
      * @return array|bool|void
      */
     public  function set( $key, $data, $ttl = 0 ) {
-        if ( !function_exists('apcu_store') ) return;
+        if (!function_exists('apcu_store')) return;
         return apcu_store( $key, $data, $ttl );
     }
 
@@ -30,7 +30,7 @@ class Apcu extends Instance
      * @return bool|void
      */
     public  function reset(){
-        if ( !function_exists('apcu_clear_cache') ) return;
+        if (!function_exists('apcu_clear_cache')) return;
         return apcu_clear_cache();
     }
 
@@ -39,7 +39,7 @@ class Apcu extends Instance
      * @return bool|string[]|void
      */
     public  function delete($key) {
-        if ( !function_exists('apcu_delete') ) return;
+        if (!function_exists('apcu_delete')) return;
         return apcu_delete($key);
     }
 }
