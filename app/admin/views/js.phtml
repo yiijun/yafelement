@@ -1,7 +1,7 @@
 <script>
     var vm = new Vue({
         el: '#app',
-        data:<?php echo json_encode($view['form']);?>,
+        data:<?php echo Building::getInstance()->renderForm('form',$fields,$validate);?>,
         methods: {
             submitForm:function(formName) {
                 this.$refs[formName].validate((valid) => {

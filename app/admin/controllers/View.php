@@ -16,17 +16,17 @@ abstract  class ViewController extends \Base\BaseController
     public function init()
     {
         parent::init();
-        $view = AbstractModel::getInstance($this->model)->renderForm(); //加载表单
         $this->_view->assign([
-            'view' => $view,
-            'controller' => $this->controller,
+            'fields' => $this->model::getInstance()->fields,
+            'validate' => $this->model::getInstance()->validate,
+            'search' => $this->model::getInstance()->search,
+            'controller' => $this->controller
         ]);
     }
 
-
     /**
-     * @return bool
-     * 通用得页面渲染
+     * @return bool|void
+     * 获取列表
      */
     public function indexAction()
     {

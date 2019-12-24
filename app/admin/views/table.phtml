@@ -1,6 +1,6 @@
 <template>
-    <el-table :data="<?php echo $view['search']?>">
-        <?php echo $view['table']?>
+    <el-table :data="<?php echo Building::getInstance()->renderSearch($search)?>">
+        <?php echo Building::getInstance()->renderTable($fields)?>
         <el-table-column align="right">
             <template slot="header" slot-scope="scope">
                 <el-input v-model="search" size="mini" placeholder="输入关键字搜索" style="max-width: 300px"/>
