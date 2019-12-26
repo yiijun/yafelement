@@ -65,7 +65,7 @@ class Pdo extends Instance
      * @param int $type
      * @return array
      */
-    public function fetchAll($statement, array $parameter = [],$type = \PDO::FETCH_ASSOC)
+    public function fetchAll($statement, array $parameter = [],$type = \PDO::FETCH_ASSOC) : array
     {
         $rs = $this->query($statement, $parameter);
         $results = $rs->fetchAll($type);
@@ -78,7 +78,7 @@ class Pdo extends Instance
      * @param int $type
      * @return mixed
      */
-    public function fetch($statement, array $parameter = [],  $type = \PDO::FETCH_ASSOC)
+    public function fetch($statement, array $parameter = [],  $type = \PDO::FETCH_ASSOC) : array
     {
         $rs = $this->query($statement, $parameter);
         $results = $rs->fetch($type);
@@ -105,7 +105,7 @@ class Pdo extends Instance
      * @param array $parameter
      * @return array
      */
-    public function insert($statement, array $parameter = [])
+    public function insert($statement, array $parameter = []) : array
     {
         return [
             'rowCount' => $this->query($statement, $parameter)->rowCount(),
@@ -116,10 +116,11 @@ class Pdo extends Instance
     /**
      * @param $statement
      * @param array $parameter
-     * @return int
+     * @return int ,返回受影响的行数
      */
-    public function update($statement, array $parameter = [])
+    public function update($statement, array $parameter = []) : int
     {
+
         return $this->query($statement, $parameter)->rowCount();
     }
 
@@ -128,7 +129,7 @@ class Pdo extends Instance
      * @param array $parameter
      * @return int
      */
-    public function delete($statement, array $parameter = [])
+    public function delete($statement, array $parameter = []) :int
     {
         return $this->query($statement, $parameter)->rowCount();
     }

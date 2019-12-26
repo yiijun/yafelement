@@ -9,25 +9,20 @@ use \Libs\Db\Pdo;
 
 class AbstractModel extends \Libs\Instance
 {
-    public $model;
+    public $create_time = true;
 
-    public function __construct($model)
-    {
-        $this->model = $model;
-    }
+    public $table;
 
     /**
      * @param $page
      * @param int $num
      * @return array
-     * 加载分页
      */
-    public function renderPage($page,$num = 20)
+    public function renderPage($page,$num = 15) : array
     {
         $start = $page ? ($page - 1) * $num : 0;
-        $table = $this->model::getInstance()->table;
-        $list = Pdo::getInstance()->fetchAll('SELECT * FROM `'.$table.'` ORDER BY `id` DESC LIMIT ?,'.$num, [$start]);
-        $count= Pdo::getInstance()->fetch('SELECT count(*) as `total` FROM `'.$table.'`',[]);
+        $list = Pdo::getInstance()->fetchAll('SELECT * FROM `'.$this->table.'` ORDER BY `id` DESC LIMIT ?,'.$num, [$start]);
+        $count= Pdo::getInstance()->fetch('SELECT count(*) as `total` FROM `'.$this->table.'`',[]);
         return [
             'list' => $list,
             'total' => intval($count['total'] )
@@ -37,19 +32,34 @@ class AbstractModel extends \Libs\Instance
     /**
      * @param array $data
      * @return int
-     * 添加数据
      */
-    public function renderAdd(array  $data) : int
+    public function renderPost(array  $data) : int
     {
         try {
+            if($this->create_time == true) $data['create_time'] = date('Y-m-d H:i:s');
             Pdo::getInstance()->pdo->beginTransaction(); //事务开启
-            $table = $this->model::getInstance()->table;
-            $keys = array_keys($data);
-            $result = Pdo::getInstance()->insert('INSERT INTO `'.$table.'`(`'.join('`,`', $keys).'`) VALUES (:'.join(',:', $keys).');', $data);
-            return  Pdo::getInstance()->pdo->commit() ? $result['lastInsertId'] : 0; //事务提交
+            if(empty($data['id'])){
+                $keys = array_keys($data);
+                $result = Pdo::getInstance()->insert('INSERT INTO `'.$this->table.'`(`'.join('`,`', $keys).'`) VALUES (:'.join(',:', $keys).');', $data);
+                return  Pdo::getInstance()->pdo->commit() ? $result['lastInsertId'] : 0; //事务提交
+            }else{
+                $keys = '';
+                foreach ($data as $key => $value) $keys .= '`'.$key.'`=:'.$key.',';
+                $result = Pdo::getInstance()->update('UPDATE `'.$this->table.'` SET '.substr($keys, 0, -1).' WHERE `id`='.$data['id'], $data);
+                return  Pdo::getInstance()->pdo->commit() ? $result : 0;
+            }
         } catch (\PDOException $e) {
             Pdo::getInstance()->pdo->rollBack(); //回滚事务
         }
         return 0;
+    }
+
+    /**
+     * @param int $id
+     * @return int
+     */
+    public function renderDelete(int $id) : int
+    {
+        return Pdo::getInstance()->delete('DELETE FROM `'.$this->table.'` WHERE `id`=?', [$id]);
     }
 }

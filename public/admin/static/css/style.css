@@ -10,6 +10,7 @@ body{padding:0px;margin:0px;}
 .main-wrapper{box-shadow: 0 2px 8px #f0f1f2;position: relative;background: #fff;padding-top: 20px;}
 .el-main {flex: 1;padding:20px;}
 .el-aside, .el-main {overflow: auto;-webkit-box-sizing: border-box;box-sizing: border-box;}
+.el-aside  a{text-decoration: none;}
 .wrapper{height:100%;}
 .el-menu{border-right:none;list-style: none;position: relative;margin: 0;padding-left: 0;background-color: #fff;height:100%;}
 ::-webkit-scrollbar {width: 3px;height: 3px;}

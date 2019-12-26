@@ -8,7 +8,7 @@
                     if (valid) {
                         $.post('/<?php echo $controller."/post"?>', vm.form).done(function(response) {
                             if(200 == response.code){
-                                vm.form = response.data.form //重载视图，使页面得值清空
+                                vm.form = <?php echo Building::getInstance()->renderClearForm($fields)?>;
                                 vm.$message.success(response.msg);
                                 vm.init();
                                 vm.dialog = false
@@ -21,11 +21,23 @@
                     }
                 });
             },
-            saveForm:function () {
-
+            saveForm:function (idx,row) {
+                vm.form = row
+                vm.dialog = true
             },
-            deleteForm:function () {
-
+            deleteForm:function (idx,row) {
+                this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'}).then(() => {
+                    $.post('/<?php echo $controller."/delete"?>', {id:row.id}).done(function(response) {
+                        if(200 == response.code){
+                            vm.$message.success(response.msg);
+                            vm.init();
+                        }else{
+                            vm.$message.error(response.msg);
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({type: 'info', message: '已取消删除'});
+                });
             },
             init:function (page) {
                 $.post('/<?php echo $controller."/index"?>', {page:page}).done(function(response) {

@@ -33,6 +33,15 @@ class Building extends \Libs\Instance
         return json_encode($form,JSON_UNESCAPED_UNICODE);
     }
 
+    public function renderClearForm($fields = [])
+    {
+        $form = [];
+        foreach ($fields as $key => $value){
+            $form[$value['key']] = $value['value'];
+        }
+        return json_encode($form,JSON_UNESCAPED_UNICODE);
+    }
+
 
     /**
      * @param array $validates
@@ -48,6 +57,11 @@ class Building extends \Libs\Instance
         return json_encode($rules);
     }
 
+    public function renderPageHtml()
+    {
+
+    }
+
     /**
      * @param array $fields
      * @return string
@@ -55,8 +69,9 @@ class Building extends \Libs\Instance
      */
     public function renderTable(array $fields) : string
     {
-        $tableString = '';
+        $tableString = '<el-table-column prop="id" label="Id"></el-table-column>';
         foreach ($fields as $key => $value){
+            if(isset($value['isTable']) && $value['isTable'] === true) continue;
             if(empty($value['alias'])){
                 $tableString .= '<el-table-column prop="'.$value['key'].'" label="'.$value['title'].'"></el-table-column>';
             }else{
@@ -67,51 +82,38 @@ class Building extends \Libs\Instance
                 $tableString .= '</template></el-table-column>';
             }
         }
+        $tableString .= '<el-table-column prop="create_time" label="时间"></el-table-column>';
         return $tableString;
     }
 
-    /**
-     * @param array $fields
-     * @return string
-     */
-    public function renderHtml(array $fields) : string
+    public function renderAside() : string
     {
-        $html = '';
-        foreach ($fields as $key => $value) {
-            switch ($value['type']){
-                case 'text':
-                    $html .= $this->setInputText($value['title'],$value['key']);
-                    break;
-                case 'textarea':
-                    $html .= $this->setInputTextArea($value['title'],$value['key']);
-                    break;
-                default:
-                    break;
-            }
-        }
-        return $html;
+        $data = \Libs\Db\Pdo::getInstance()->fetchAll("SELECT * FROM `yaf_route`");
+        $menus = RouteModel::getInstance()->treeRoute($data,0,0);
+        $aside = $this->treeAsideData($menus);
+        return $aside;
     }
 
-    public function renderSubmit(string $name,string $url,string $form = 'form') : string
+    /**
+     * @param array $data
+     * @return string
+     * 递归菜单
+     */
+    private function treeAsideData(array $data)
     {
-        $string = $name.':function(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        $.post("'.$url.'", vm.'.$form.').done(function(response) {
-                            if(200 == response.code){
-                                vm.$message.success(response.msg);
-                                vm.init();
-                                vm.dialog = false
-                            }else{
-                                vm.$message.error(response.msg);
-                            }
-                        })
-                    } else {
-                        return false;
-                    }
-                });
-            },';
-        return $string;
+        $html = '';
+        if(is_array($data)) {
+            foreach ($data as $row) {
+                if (empty($row['children'])) {
+                    $html .= '<el-menu-item index="'.$row['id'].'"><template slot="title"><i class="'.$row['icon'].'"></i><span>'.$row['name'].'</span></template></el-menu-item>';
+                } else {
+                    $html .= '<el-submenu index="'.$row['id'].'"><template slot="title"><i class="'.$row['icon'].'"></i> <span>'.$row['name'].'</span></template>';
+                    $html .= $this->treeAsideData($row['children']);
+                    $html .= '</el-submenu>' ;
+                }
+            }
+        }
+       return $html;
     }
 
     /**
@@ -129,29 +131,61 @@ class Building extends \Libs\Instance
         return $searchString;
     }
 
-
-
     /**
-     * @param $label
-     * @param $key
+     * @param array $fields
      * @return string
-     * 设置单行文本
      */
-    public function setInputText(string $label,string  $key) : string
+    public function renderHtml(array $fields) : string
     {
-        $html = '<el-form-item prop="'.$key.'" label="'.$label.'"><el-input v-model="form.'.$key.'"></el-input></el-form-item>';
+        $html = '';
+        foreach ($fields as $key => $value) {
+            switch ($value['type']){
+                case 'text':
+                    $html .= $this->setInputText($value);
+                    break;
+                case 'textarea':
+                    $html .= $this->setInputTextArea($value);
+                    break;
+                case 'cascader':
+                    $html .= $this->setCascader($value);
+                    break;
+                default:
+                    break;
+            }
+        }
         return $html;
     }
 
     /**
-     * @param $label
-     * @param $key
+     * @param array $value
      * @return string
-     * 设置多行文本
+     * 单行文本
      */
-    public function setInputTextArea(string  $label, string $key) : string
+    public function setInputText(array $value) : string
     {
-        $html = '<el-form-item prop="'.$key.'" label="'.$label.'"><el-input type="textarea" v-model="form.'.$key.'"></el-input></el-form-item>';
+        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input v-model="form.'.$value['key'].'"></el-input></el-form-item>';
+        return $html;
+    }
+
+    /**
+     * @param array $value
+     * @return string
+     * 多行文本
+     */
+    public function setInputTextArea(array  $value) : string
+    {
+        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input type="textarea" v-model="form.'.$value['key'].'"></el-input></el-form-item>';
+        return $html;
+    }
+
+    /**
+     * @param $value
+     * @return string
+     * 级联
+     */
+    public function setCascader($value)
+    {
+        $html = '<el-form-item label="'.$value['title'].'"><el-cascader :props='.json_encode($value['prop']['props']).' v-model="form.'.$value['key'].'" placeholder="输入关键字搜索" :options='.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().' filterable></el-cascader></el-form-item>';
         return $html;
     }
 }
