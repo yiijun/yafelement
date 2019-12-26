@@ -78,6 +78,8 @@ class RouteModel extends AbstractModel
 
     public $search = ['name'];
 
+    public $reload = true;//是否重载页面
+
     /**
      * @return string
      * 级联选择回调函数
@@ -124,5 +126,15 @@ class RouteModel extends AbstractModel
             'list' => $tree,
             'total' => intval($count['total'] )
         ];
+    }
+
+    public function getRowByRoute(string $route) :array
+    {
+        return Pdo::getInstance()->fetch('SELECT `id` FROM `'.$this->table.'` WHERE `route` = ?',[$route]);
+    }
+
+    public function getAll()
+    {
+        return Pdo::getInstance()->fetchAll('SELECT * FROM `'.$this->table.'`');
     }
 }

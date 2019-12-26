@@ -16,7 +16,7 @@ abstract class ViewController extends \Base\BaseController
             'fields' => $this->model::getInstance()->fields,
             'validate' => $this->model::getInstance()->validate,
             'search' => $this->model::getInstance()->search,
-            'controller' => $this->controller,
+            'reload' => $this->model::getInstance()->reload //是否重载页面
         ]);
     }
 
@@ -32,8 +32,7 @@ abstract class ViewController extends \Base\BaseController
 
     public function postAction()
     {
-        $data = $this->_request->getPost();
-        $res = $this->model::getInstance()->renderPost($data);
+        $res = $this->model::getInstance()->renderPost();
         if($res){
             return Common::getInstance()->success();
         }

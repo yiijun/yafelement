@@ -1,5 +1,5 @@
 <template>
-    <el-table row-key="id" :tree-props="{children: 'children'}" :data="<?php echo Building::getInstance()->renderSearch($search)?>">
+    <el-table :default-expand-all="true" row-key="id" :tree-props="{children: 'children'}" :data="<?php echo Building::getInstance()->renderSearch($search)?>">
         <?php echo Building::getInstance()->renderTable($fields)?>
         <el-table-column align="right">
             <template slot="header" slot-scope="scope">

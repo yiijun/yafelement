@@ -86,12 +86,27 @@ class Building extends \Libs\Instance
         return $tableString;
     }
 
+    /**
+     * @return string
+     * 加载菜单
+     */
     public function renderAside() : string
     {
-        $data = \Libs\Db\Pdo::getInstance()->fetchAll("SELECT * FROM `yaf_route`");
+        $data  = RouteModel::getInstance()->getAll();
         $menus = RouteModel::getInstance()->treeRoute($data,0,0);
         $aside = $this->treeAsideData($menus);
         return $aside;
+    }
+
+    /**
+     * @param string $controller
+     * @param string $action
+     * @return int
+     * 获取当前选中菜单
+     */
+    public function renderCurrentAside(string $controller,string $action)
+    {
+        return RouteModel::getInstance()->getRowByRoute('/'.strtolower($controller).'/'.strtolower($action))['id'] ?:0;
     }
 
     /**
@@ -105,7 +120,7 @@ class Building extends \Libs\Instance
         if(is_array($data)) {
             foreach ($data as $row) {
                 if (empty($row['children'])) {
-                    $html .= '<el-menu-item index="'.$row['id'].'"><template slot="title"><i class="'.$row['icon'].'"></i><span>'.$row['name'].'</span></template></el-menu-item>';
+                    $html .= '<a href="'.$row['route'].'"><el-menu-item index="'.$row['id'].'"><template slot="title"><i class="'.$row['icon'].'"></i><span>'.$row['name'].'</span></template></el-menu-item></a>';
                 } else {
                     $html .= '<el-submenu index="'.$row['id'].'"><template slot="title"><i class="'.$row['icon'].'"></i> <span>'.$row['name'].'</span></template>';
                     $html .= $this->treeAsideData($row['children']);

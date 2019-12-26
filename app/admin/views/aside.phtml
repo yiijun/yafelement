@@ -1,6 +1,5 @@
 <el-aside width="200px">
-    <el-menu default-active="1-4-1" class="el-menu-vertical-demo">
+    <el-menu default-active="<?php echo Building::getInstance()->renderCurrentAside($controller,$action)?>" class="el-menu-vertical-demo">
         <?php echo Building::getInstance()->renderAside();?>
     </el-menu>
-
 </el-aside>

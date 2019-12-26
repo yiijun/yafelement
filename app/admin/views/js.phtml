@@ -10,7 +10,12 @@
                             if(200 == response.code){
                                 vm.form = <?php echo Building::getInstance()->renderClearForm($fields)?>;
                                 vm.$message.success(response.msg);
-                                vm.init();
+                                let is_reload = <?php echo $reload?:0?>;
+                                if(is_reload){
+                                    window.location.reload();
+                                }else{
+                                    vm.init();
+                                }
                                 vm.dialog = false
                             }else{
                                 vm.$message.error(response.msg);
