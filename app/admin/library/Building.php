@@ -105,9 +105,42 @@ class Building extends \Libs\Instance
      * @return int
      * 获取当前选中菜单
      */
-    public function renderCurrentAside(string $controller,string $action)
+    public function renderCurrentAside(string $controller,string $action) : int
     {
         return RouteModel::getInstance()->getRowByRoute('/'.strtolower($controller).'/'.strtolower($action))['id'] ?:0;
+    }
+
+
+    /**
+     * @param string $controller
+     * @param string $action
+     * @return string
+     */
+    public function renderBreadcrumb(string $controller,string $action) : string
+    {
+        $route = '/'.strtolower($controller).'/'.strtolower($action);
+        $row = RouteModel::getInstance()->getRowByRoute($route);
+        function parents($pid){
+            static $data = [];
+            if($pid!= 0){
+                $row = RouteModel::getInstance()->getRowById($pid);
+            }
+            if(!empty($row)){
+                $data[] = $row;
+                parents($row['pid']);
+            }
+            return $data;
+        }
+
+        $data = parents($row['pid']);
+        array_unshift($data,$row);
+        $breadcrumb = '';
+        foreach (array_reverse($data) as $key => $value){
+            $breadcrumb .= ' <el-breadcrumb-item><a href="'.$value['route'].'">'.$value['name'].'</a></el-breadcrumb-item>';
+        }
+        return $breadcrumb;
+
+
     }
 
     /**
