@@ -120,27 +120,22 @@ class Building extends \Libs\Instance
     {
         $route = '/'.strtolower($controller).'/'.strtolower($action);
         $row = RouteModel::getInstance()->getRowByRoute($route);
-        function parents($pid){
+        $parents = function ($pid) use (&$parents){
             static $data = [];
-            if($pid!= 0){
-                $row = RouteModel::getInstance()->getRowById($pid);
-            }
+            if($pid!= 0) $row = RouteModel::getInstance()->getRowById($pid);
             if(!empty($row)){
                 $data[] = $row;
-                parents($row['pid']);
+                $parents($row['pid']);
             }
             return $data;
-        }
-
-        $data = parents($row['pid']);
+        };
+        $data = $parents($row['pid']);
         array_unshift($data,$row);
         $breadcrumb = '';
         foreach (array_reverse($data) as $key => $value){
             $breadcrumb .= ' <el-breadcrumb-item><a href="'.$value['route'].'">'.$value['name'].'</a></el-breadcrumb-item>';
         }
         return $breadcrumb;
-
-
     }
 
     /**
