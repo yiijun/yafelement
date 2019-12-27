@@ -15,6 +15,10 @@ class AbstractModel extends \Libs\Instance
 
     public $reload = false;
 
+    public $validate = ['rules' => ['null' => null]];
+
+    public $search = [];
+
     public function __construct()
     {
         $fields   = Pdo::getInstance()->fetchAll('DESC ' . $this->table,[],\PDO::FETCH_COLUMN);

@@ -12,7 +12,7 @@ class Building extends \Libs\Instance
      * @param array $fields
      * @param array $validate
      * @param array $basic
-     * @param array $extra
+     * @param array $extra 扩展字段需要在视图中定义返回页面再渲染
      * @return string
      * 渲染form
      */
@@ -25,6 +25,7 @@ class Building extends \Libs\Instance
         if(!empty($extra)){
             $basic = array_merge($basic,$extra);
         }
+
         foreach ($validate as $key => $value){
             $form[$key] = $value;
         }
@@ -148,21 +149,26 @@ class Building extends \Libs\Instance
 
     /**
      * @param array $fields
+     * @param string $controller
+     * @param string $name
      * @return string
      */
-    public function renderHtml(array $fields) : string
+    public function renderHtml(array $fields,string $controller = '',string $name = 'form') : string
     {
         $html = '';
         foreach ($fields as $key => $value) {
             switch ($value['type']){
                 case 'text':
-                    $html .= $this->setInputText($value);
+                    $html .= $this->setInputText($value,$name);
                     break;
                 case 'textarea':
-                    $html .= $this->setInputTextArea($value);
+                    $html .= $this->setInputTextArea($value,$name);
                     break;
                 case 'cascader':
-                    $html .= $this->setCascader($value);
+                    $html .= $this->setCascader($value,$name);
+                    break;
+                case 'upload':
+                    $html .= $this->setUpload($value,$name,$controller);
                     break;
                 default:
                     break;
@@ -173,34 +179,32 @@ class Building extends \Libs\Instance
 
     /**
      * @param array $value
+     * @param string $name
      * @return string
-     * 单行文本
      */
-    public function setInputText(array $value) : string
+    public function setInputText(array $value,string $name) : string
     {
-        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input v-model="form.'.$value['key'].'"></el-input></el-form-item>';
+        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input v-model="'.$name.'.'.$value['key'].'"></el-input></el-form-item>';
         return $html;
     }
 
-    /**
-     * @param array $value
-     * @return string
-     * 多行文本
-     */
-    public function setInputTextArea(array  $value) : string
+
+    public function setInputTextArea(array  $value,string $name) : string
     {
-        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input type="textarea" v-model="form.'.$value['key'].'"></el-input></el-form-item>';
+        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input type="textarea" v-model="'.$name.'.'.$value['key'].'"></el-input></el-form-item>';
         return $html;
     }
 
-    /**
-     * @param $value
-     * @return string
-     * 级联
-     */
-    public function setCascader($value)
+
+    public function setCascader($value,$name)
     {
-        $html = '<el-form-item label="'.$value['title'].'"><el-cascader :props='.json_encode($value['prop']['props']).' v-model="form.'.$value['key'].'" placeholder="输入关键字搜索" :options='.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().' filterable></el-cascader></el-form-item>';
+        $html = '<el-form-item label="'.$value['title'].'"><el-cascader :props='.json_encode($value['prop']['props']).' v-model="'.$name .'.'.$value['key'].'" placeholder="输入关键字搜索" :options='.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().' filterable></el-cascader></el-form-item>';
+        return $html;
+    }
+
+    public function setUpload($value,$name,$controller)
+    {
+        $html = '<el-form-item label="'.$value['title'].'"><el-upload class="avatar-uploader" action="/'.strtolower($controller).'/upload/field/'.$value['key'].'/name/'.$name.'" :show-file-list="false":on-success="handleSuccess"><img v-if="'.$name.'.'.$value['key'].'" :src="'.$name.'.'.$value['key'].'" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
         return $html;
     }
 }

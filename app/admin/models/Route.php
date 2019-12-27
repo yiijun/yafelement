@@ -19,7 +19,7 @@ class RouteModel extends AbstractModel
             'value' => '',
             'title' => '菜单名称',
             'key' => 'name',
-            'show' => []
+            'show' => ['添加']
         ],
         [
             'type' => 'cascader',

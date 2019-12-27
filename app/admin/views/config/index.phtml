@@ -1,3 +1,26 @@
+<?php Yaf\Loader::import(__DIR__.'/../head.phtml');?>
+<el-main>
+    <?php Yaf\Loader::import(__DIR__.'/../breadcrumb.phtml');?>
+    <div class="table-list">
+        <el-row>
+            <el-col :span="12">
+                <div class="grid-content bg-purple">
+                    <el-form :model="form" :rules="rules" ref="form" :label-width="labelWidth">
+                        <?php echo Building::getInstance()->renderHtml($fields,$controller)?>
+                    </el-form>
+                </div>
+            </el-col>
+            <el-col :span="12"><div class="grid-content bg-purple-light"></div></el-col>
+        </el-row>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialog = false">取 消</el-button>
+            <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+        </div>
+    </div>
+</el-main>
+<?php Yaf\Loader::import(__DIR__.'/../foot.phtml');?>
+<!--通用的JS-->
 <script>
     var vm = new Vue({
         el: '#app',
@@ -33,29 +56,10 @@
                     vm.$message.error(response.msg);
                 }
             },
-            saveForm:function (idx,row) {
-                vm.form = row
-                vm.dialog = true
-            },
-            deleteForm:function (idx,row) {
-                this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'}).then(() => {
-                    $.post('/<?php echo $controller."/delete"?>', {id:row.id}).done(function(response) {
-                        if(200 == response.code){
-                            vm.$message.success(response.msg);
-                            vm.init();
-                        }else{
-                            vm.$message.error(response.msg);
-                        }
-                    })
-                }).catch(() => {
-                    this.$message({type: 'info', message: '已取消删除'});
-                });
-            },
             init:function (page) {
                 $.post('/<?php echo $controller."/index"?>', {page:page}).done(function(response) {
                     if(200 == response.code){
-                        vm.table = response.data.list
-                        vm.total = response.data.total
+                        vm.form = response.data
                     }else{
                         vm.$message.error(response.msg);
                     }

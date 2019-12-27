@@ -8,9 +8,9 @@ namespace Libs\File;
 use Libs\Instance;
 
 class Upload extends Instance {
-    protected $error;
-    protected $file;
-    protected $filename;
+    public $error;
+    public $file;
+    public $filename;
 
     private function checkPath($path)
     {
@@ -23,7 +23,7 @@ class Upload extends Instance {
 
     private function checkSize($size)
     {
-        return$this->file["file"]["size"] < $size;
+        return$this->file["size"] < $size;
     }
 
     private function checkExt($ext)
