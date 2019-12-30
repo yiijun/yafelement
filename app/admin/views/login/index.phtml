@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>login - 炫纹科技</title>
+    <link href="/static/css/login.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/static/element-ui@2.13.0/css/index.css">
+</head>
+<body>
+<div class="login_m" id="app">
+    <div class="login_logo"><img src="/static/images/logo.png"></div>
+        <div class="login_boder">
+            <div class="login_padding" id="login_model">
+
+          <h2>USERNAME</h2>
+          <label>
+              <el-input type="text" v-model="form.username" placeholder="请输入用户账号" style="margin-bottom: 20px"></el-input>
+          </label>
+
+
+          <h2>PASSWORD</h2>
+          <label>
+              <el-input type="password" v-model="form.password" placeholder="请输入用户密码" style="margin-bottom: 20px"></el-input>
+          </label>
+          <div class="rem_sub">
+              <div class="rem_sub_l">
+                  <span class="rem_checked">
+                      <el-checkbox v-model="form.remember_me">记住我</el-checkbox>
+                  </span>
+               </div>
+
+                <label>
+                  <input type="submit" class="sub_button"  id="button" value="登录" style="opacity: 0.7;" @click="onSubmit()">
+                </label>
+          </div>
+        </div>
+    </div>
+</div>
+<div class="footer"><?php echo \Libs\Comm\Common::getInstance()->binToStr('1000011 1101111 1110000 1111001 1110010 1101001 1100111 1101000 1110100 100000 111001111000001010101011 111001111011101010111001 111001111010011110010001 111001101000101010000000 100000 1100010 1111001 100000 100000 1110110 110001 101110 110000')?></div>
+</body>
+</html>
+<script src="/static/js/jquery-3.3.1.min.js"></script>
+<script src="/static/js/vue.js"></script>
+<script src="/static/element-ui@2.13.0/js/index.js"></script>
+<script>
+var vm =  new Vue({
+    el: '#app',
+    data:{
+        form:{
+            username:'',
+            password:'',
+            remember_me: true
+        },
+    },
+    methods: {
+        onSubmit:function () {
+            $.post('/login/login', vm.form).done(function(response) {
+                if(200 == response.code){
+                    vm.$message.success(response.msg);
+                    setTimeout(function () {
+                        window.location.href = '/index/index';
+                    },1000)
+                }else{
+                    vm.$message.error(response.msg);
+                }
+            })
+        }
+    },
+})
+</script>
+

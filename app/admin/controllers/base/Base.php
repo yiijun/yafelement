@@ -15,8 +15,16 @@ class BaseController extends \Yaf\Controller_Abstract
 
     public $action;
 
+    public $login_info = null;
+
+    public $config = [];
+
     public function init()
     {
+        $this->login_info = \Libs\Cache\Session::getInstance()->get('login_info');
+        if(empty($this->login_info)) {
+            $this->forward("login");
+        }
         $this->controller = $this->_request->controller;
         $this->action = $this->_request->action;
         $this->model = $this->controller.'Model';
@@ -26,6 +34,9 @@ class BaseController extends \Yaf\Controller_Abstract
         ]);
     }
 
+    /**
+     * 文件上传
+     */
     public function uploadAction()
     {
         if($this->_request->isPost()){

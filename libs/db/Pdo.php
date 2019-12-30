@@ -68,7 +68,7 @@ class Pdo extends Instance
     public function fetchAll($statement, array $parameter = [],$type = \PDO::FETCH_ASSOC) : array
     {
         $rs = $this->query($statement, $parameter);
-        $results = $rs->fetchAll($type);
+        $results = $rs->fetchAll($type) ?: [];
         return $results;
     }
 
@@ -81,7 +81,7 @@ class Pdo extends Instance
     public function fetch($statement, array $parameter = [],  $type = \PDO::FETCH_ASSOC) : array
     {
         $rs = $this->query($statement, $parameter);
-        $results = $rs->fetch($type);
+        $results = $rs->fetch($type) ?: [];
 
         return $results;
     }

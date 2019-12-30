@@ -130,7 +130,7 @@ class RouteModel extends AbstractModel
 
     public function getRowByRoute(string $route) :array
     {
-        return Pdo::getInstance()->fetch('SELECT `id`,`pid`,`route`,`name` FROM `'.$this->table.'` WHERE `route` = ?',[$route]);
+        return Pdo::getInstance()->fetch('SELECT `id`,`pid`,`route`,`name` FROM `'.$this->table.'` WHERE `route` = ?',[$route]) ?:[];
     }
 
     public function getRowById(int $id) :array

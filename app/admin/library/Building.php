@@ -129,11 +129,11 @@ class Building extends \Libs\Instance
             }
             return $data;
         };
-        $data = $parents($row['pid']);
+        $data = isset($row['pid']) ? $parents($row['pid']):[];
         array_unshift($data,$row);
         $breadcrumb = '';
         foreach (array_reverse($data) as $key => $value){
-            $breadcrumb .= ' <el-breadcrumb-item><a href="'.$value['route'].'">'.$value['name'].'</a></el-breadcrumb-item>';
+            $breadcrumb .= isset($value['route']) ? ' <el-breadcrumb-item><a href="'.$value['route'].'">'.$value['name'].'</a></el-breadcrumb-item>' : '';
         }
         return $breadcrumb;
     }
