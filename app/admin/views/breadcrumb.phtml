@@ -1,4 +1,4 @@
 <el-breadcrumb separator="/">
-    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item :to="/index/">首页</el-breadcrumb-item>
     <?php echo Building::getInstance()->renderBreadcrumb($controller,$action)?>
 </el-breadcrumb>

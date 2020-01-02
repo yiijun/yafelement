@@ -23,7 +23,7 @@ class BaseController extends \Yaf\Controller_Abstract
     {
         $this->login_info = \Libs\Cache\Session::getInstance()->get('login_info');
         if(empty($this->login_info)) {
-            $this->forward("login");
+            $this->redirect("/Login/index");
         }
         $this->controller = $this->_request->controller;
         $this->action = $this->_request->action;
@@ -41,11 +41,9 @@ class BaseController extends \Yaf\Controller_Abstract
     {
         if($this->_request->isPost()){
             $get = $this->_request->getParams();
-
             if(empty($get['field']) || empty($get['name'])) {
                 return Common::getInstance()->error('上传参数错误');
             }
-
             $path = Upload::getInstance()->post('upload/',['ext' => ['jpg','png'],'size' => 2000000]);
             return Common::getInstance()->success([
                 'path' => "vm.{$get['name']}.{$get['field']} = '{$path}'"

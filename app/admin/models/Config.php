@@ -31,7 +31,7 @@ class ConfigModel extends AbstractModel
             'show' => []
         ],
         [
-            'type' => 'text',
+            'type' => 'textarea',
             'value' => '',
             'title' => '描述',
             'key' => 'desc',
