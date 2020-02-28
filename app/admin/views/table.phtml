@@ -6,8 +6,7 @@
                 <el-input v-model="search" size="mini" placeholder="输入关键字搜索" style="max-width: 300px"/>
             </template>
             <template slot-scope="scope">
-                <el-button size="mini" @click="saveForm(scope.$index, scope.row)">Edit</el-button>
-                <el-button size="mini" type="danger" @click="deleteForm(scope.$index, scope.row)">Delete</el-button>
+                <?php echo Building::getInstance()->renderTableButton($tableButton);?>
             </template>
         </el-table-column>
     </el-table>

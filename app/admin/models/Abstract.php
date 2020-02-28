@@ -11,6 +11,8 @@ class AbstractModel extends \Libs\Instance
 {
     public $create_time = true;
 
+    public $fields = [];
+
     public $field;
 
     public $reload = false;
@@ -19,16 +21,20 @@ class AbstractModel extends \Libs\Instance
 
     public $search = [];
 
+    public $tableButton = [
+        'edit' => ['func' => 'saveForm','txt' => 'Edit','type' => 'primary'],
+        'del' => ['func' => 'deleteForm','txt' => 'Delete','type' => 'danger']
+    ];
+
     public function __construct()
     {
-        $fields   = Pdo::getInstance()->fetchAll('DESC ' . $this->table,[],\PDO::FETCH_COLUMN);
-        foreach ($fields as $field => $option){
-            $this->field[$option] = filter_input(INPUT_POST,$option); //过滤字段
+        foreach ($this->fields as $field => $option){
+            $filter = filter_input(INPUT_POST,$option['key']);
+            if($filter) $this->field[$option['key']] = $filter;
         }
     }
 
     public $table;
-
 
     public function renderPage($page,$num = 15) : array
     {

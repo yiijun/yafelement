@@ -176,6 +176,20 @@ class Building extends \Libs\Instance
     }
 
     /**
+     * @param array $button
+     * @return string
+     * 获取表格操作事件
+     */
+    public function renderTableButton(array $button = ['edit' => ['func' => 'saveForm','txt' => 'Edit','type' => 'primary'],'del' => ['func' => 'deleteForm','txt' => 'Delete','type' => 'danger']]) : string
+    {
+        $html = '';
+        foreach ($button as $key => $value){
+            $html .= '<el-button type="'.$value['type'].'" size="mini" @click="'.$value['func'].'(scope.$index, scope.row)">'.$value['txt'].'</el-button>';
+        }
+        return $html;
+    }
+
+    /**
      * @param array $fields
      * @param string $controller
      * @param string $name

@@ -16,7 +16,8 @@ abstract class ViewController extends \Base\BaseController
             'fields' => $this->model::getInstance()->fields,
             'validate' => $this->model::getInstance()->validate,
             'search' => $this->model::getInstance()->search,
-            'reload' => $this->model::getInstance()->reload //是否重载页面
+            'reload' => $this->model::getInstance()->reload,
+            'tableButton' => $this->model::getInstance()->tableButton
         ]);
     }
 
@@ -36,7 +37,7 @@ abstract class ViewController extends \Base\BaseController
         if($res){
             return Common::getInstance()->success();
         }
-        return Common::getInstance()->error();
+        return Common::getInstance()->error('操作失败');
     }
 
 

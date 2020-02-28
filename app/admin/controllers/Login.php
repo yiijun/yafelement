@@ -24,7 +24,7 @@ class LoginController extends \Yaf\Controller_Abstract
             $res = \Libs\Db\Pdo::getInstance()->update("UPDATE `yaf_admin` SET `addr` = ?,`login_time` = ? WHERE `username` = ?",[$addr,$login_time,$username]);
             if($res){
                 \Libs\Cache\Session::getInstance()->set('login_info', [
-                    'aid' => $login['aid'],
+                    'id' => $login['id'],
                     'username' => $login['username'],
                     'login_time' => $login_time,
                     'addr' => $addr,
