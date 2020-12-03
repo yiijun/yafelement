@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User: tangyijun
  * Date: 2019-12-23
@@ -16,31 +17,31 @@ class Building extends \Libs\Instance
      * @return string
      * 渲染form
      */
-    public function renderForm($formName = 'form',array $fields = [],array $validate = [],array $extra = [],array $basic = ['labelWidth' => '80px','dialog' => false,'table' => [],'search' => '','total' => 0]) :string
+    public function renderForm($formName = 'form', array $fields = [], array $validate = [], array $extra = [], array $basic = ['labelWidth' => '80px', 'dialog' => false, 'table' => [], 'search' => '', 'total' => 0]): string
     {
         $form = [];
-        foreach ($fields as $key => $value){
+        foreach ($fields as $key => $value) {
             $form[$formName][$value['key']] = $value['value'];     //表单字段
         }
-        if(!empty($extra)){
-            $basic = array_merge($basic,$extra);
+        if(!empty($extra)) {
+            $basic = array_merge($basic, $extra);
         }
 
-        foreach ($validate as $key => $value){
+        foreach ($validate as $key => $value) {
             $form[$key] = $value;
         }
-        foreach ($basic as  $key => $value) $form[$key] = $value;
+        foreach ($basic as $key => $value) $form[$key] = $value;
 
-        return json_encode($form,JSON_UNESCAPED_UNICODE);
+        return json_encode($form, JSON_UNESCAPED_UNICODE);
     }
 
     public function renderClearForm($fields = [])
     {
         $form = [];
-        foreach ($fields as $key => $value){
+        foreach ($fields as $key => $value) {
             $form[$value['key']] = $value['value'];
         }
-        return json_encode($form,JSON_UNESCAPED_UNICODE);
+        return json_encode($form, JSON_UNESCAPED_UNICODE);
     }
 
 
@@ -49,10 +50,10 @@ class Building extends \Libs\Instance
      * @return string
      * 表单验证
      */
-    public function renderValidate(array $validates) : string
+    public function renderValidate(array $validates): string
     {
         $rules = [];
-        foreach ($validates as $key => $value){
+        foreach ($validates as $key => $value) {
             $rules[$key] = $value;
         }
         return json_encode($rules);
@@ -68,17 +69,17 @@ class Building extends \Libs\Instance
      * @return string
      * 渲染table
      */
-    public function renderTable(array $fields) : string
+    public function renderTable(array $fields): string
     {
         $tableString = '<el-table-column prop="id" label="Id"></el-table-column>';
-        foreach ($fields as $key => $value){
+        foreach ($fields as $key => $value) {
             if(isset($value['isTable']) && $value['isTable'] === true) continue;
-            if(empty($value['alias'])){
-                $tableString .= '<el-table-column prop="'.$value['key'].'" label="'.$value['title'].'"></el-table-column>';
-            }else{
-                $tableString .= '<el-table-column   label="'.$value['title'].'"><template scope="scope">';
-                foreach ($value['alias'] as $idx => $item){
-                    $tableString .= '<span v-if="scope.row.'.$value['key'].'=='.$idx.'">'.$item.'</span>';
+            if(empty($value['alias'])) {
+                $tableString .= '<el-table-column prop="' . $value['key'] . '" label="' . $value['title'] . '"></el-table-column>';
+            } else {
+                $tableString .= '<el-table-column   label="' . $value['title'] . '"><template scope="scope">';
+                foreach ($value['alias'] as $idx => $item) {
+                    $tableString .= '<span v-if="scope.row.' . $value['key'] . '==' . $idx . '">' . $item . '</span>';
                 }
                 $tableString .= '</template></el-table-column>';
             }
@@ -91,10 +92,10 @@ class Building extends \Libs\Instance
      * @return string
      * 加载菜单
      */
-    public function renderAside() : string
+    public function renderAside(): string
     {
-        $data  = RouteModel::getInstance()->getAll();
-        $menus = RouteModel::getInstance()->treeRoute($data,0,0);
+        $data = RouteModel::getInstance()->getAll();
+        $menus = RouteModel::getInstance()->treeRoute($data, 0, 0);
         $aside = $this->treeAsideData($menus);
         return $aside;
     }
@@ -105,9 +106,9 @@ class Building extends \Libs\Instance
      * @return int
      * 获取当前选中菜单
      */
-    public function renderCurrentAside(string $controller,string $action) : int
+    public function renderCurrentAside(string $controller, string $action): int
     {
-        return RouteModel::getInstance()->getRowByRoute('/'.strtolower($controller).'/'.strtolower($action))['id'] ?:0;
+        return RouteModel::getInstance()->getRowByRoute('/' . strtolower($controller) . '/' . strtolower($action))['id'] ?: 0;
     }
 
 
@@ -116,24 +117,24 @@ class Building extends \Libs\Instance
      * @param string $action
      * @return string
      */
-    public function renderBreadcrumb(string $controller,string $action) : string
+    public function renderBreadcrumb(string $controller, string $action): string
     {
-        $route = '/'.strtolower($controller).'/'.strtolower($action);
+        $route = '/' . strtolower($controller) . '/' . strtolower($action);
         $row = RouteModel::getInstance()->getRowByRoute($route);
-        $parents = function ($pid) use (&$parents){
+        $parents = function($pid) use (&$parents) {
             static $data = [];
-            if($pid!= 0) $row = RouteModel::getInstance()->getRowById($pid);
-            if(!empty($row)){
+            if($pid != 0) $row = RouteModel::getInstance()->getRowById($pid);
+            if(!empty($row)) {
                 $data[] = $row;
                 $parents($row['pid']);
             }
             return $data;
         };
-        $data = isset($row['pid']) ? $parents($row['pid']):[];
-        array_unshift($data,$row);
+        $data = isset($row['pid']) ? $parents($row['pid']) : [];
+        array_unshift($data, $row);
         $breadcrumb = '';
-        foreach (array_reverse($data) as $key => $value){
-            $breadcrumb .= isset($value['route']) ? ' <el-breadcrumb-item><a href="'.$value['route'].'">'.$value['name'].'</a></el-breadcrumb-item>' : '';
+        foreach (array_reverse($data) as $key => $value) {
+            $breadcrumb .= isset($value['route']) ? ' <el-breadcrumb-item><a href="' . $value['route'] . '">' . $value['name'] . '</a></el-breadcrumb-item>' : '';
         }
         return $breadcrumb;
     }
@@ -148,16 +149,16 @@ class Building extends \Libs\Instance
         $html = '';
         if(is_array($data)) {
             foreach ($data as $row) {
-                if (empty($row['children'])) {
-                    $html .= '<a href="'.$row['route'].'"><el-menu-item index="'.$row['id'].'"><template slot="title"><i class="'.$row['icon'].'"></i><span>'.$row['name'].'</span></template></el-menu-item></a>';
+                if(empty($row['children'])) {
+                    $html .= '<a href="' . $row['route'] . '"><el-menu-item index="' . $row['id'] . '"><template slot="title"><i class="' . $row['icon'] . '"></i><span>' . $row['name'] . '</span></template></el-menu-item></a>';
                 } else {
-                    $html .= '<el-submenu index="'.$row['id'].'"><template slot="title"><i class="'.$row['icon'].'"></i> <span>'.$row['name'].'</span></template>';
+                    $html .= '<el-submenu index="' . $row['id'] . '"><template slot="title"><i class="' . $row['icon'] . '"></i> <span>' . $row['name'] . '</span></template>';
                     $html .= $this->treeAsideData($row['children']);
-                    $html .= '</el-submenu>' ;
+                    $html .= '</el-submenu>';
                 }
             }
         }
-       return $html;
+        return $html;
     }
 
     /**
@@ -165,11 +166,11 @@ class Building extends \Libs\Instance
      * @return string
      * 渲染搜索
      */
-    public function renderSearch(array $search) :string
+    public function renderSearch(array $search): string
     {
         $searchString = 'table.filter(data => !search';
-        foreach ($search as $key => $value){
-            $searchString .= ' || data.'.$value.'.toLowerCase().includes(search.toLowerCase())';
+        foreach ($search as $key => $value) {
+            $searchString .= ' || data.' . $value . '.toLowerCase().includes(search.toLowerCase())';
         }
         $searchString .= ')';
         return $searchString;
@@ -180,11 +181,11 @@ class Building extends \Libs\Instance
      * @return string
      * 获取表格操作事件
      */
-    public function renderTableButton(array $button = ['edit' => ['func' => 'saveForm','txt' => 'Edit','type' => 'primary'],'del' => ['func' => 'deleteForm','txt' => 'Delete','type' => 'danger']]) : string
+    public function renderTableButton(array $button = ['edit' => ['func' => 'saveForm', 'txt' => 'Edit', 'type' => 'primary'], 'del' => ['func' => 'deleteForm', 'txt' => 'Delete', 'type' => 'danger']]): string
     {
         $html = '';
-        foreach ($button as $key => $value){
-            $html .= '<el-button type="'.$value['type'].'" size="mini" @click="'.$value['func'].'(scope.$index, scope.row)">'.$value['txt'].'</el-button>';
+        foreach ($button as $key => $value) {
+            $html .= '<el-button type="' . $value['type'] . '" size="mini" @click="' . $value['func'] . '(scope.$index, scope.row)">' . $value['txt'] . '</el-button>';
         }
         return $html;
     }
@@ -195,22 +196,22 @@ class Building extends \Libs\Instance
      * @param string $name
      * @return string
      */
-    public function renderHtml(array $fields,string $controller = '',string $name = 'form') : string
+    public function renderHtml(array $fields, string $controller = '', string $name = 'form'): string
     {
         $html = '';
         foreach ($fields as $key => $value) {
-            switch ($value['type']){
+            switch ($value['type']) {
                 case 'text':
-                    $html .= $this->setInputText($value,$name);
+                    $html .= $this->setInputText($value, $name);
                     break;
                 case 'textarea':
-                    $html .= $this->setInputTextArea($value,$name);
+                    $html .= $this->setInputTextArea($value, $name);
                     break;
                 case 'cascader':
-                    $html .= $this->setCascader($value,$name);
+                    $html .= $this->setCascader($value, $name);
                     break;
                 case 'upload':
-                    $html .= $this->setUpload($value,$name,$controller);
+                    $html .= $this->setUpload($value, $name, $controller);
                     break;
                 default:
                     break;
@@ -224,29 +225,29 @@ class Building extends \Libs\Instance
      * @param string $name
      * @return string
      */
-    public function setInputText(array $value,string $name) : string
+    public function setInputText(array $value, string $name): string
     {
-        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input v-model="'.$name.'.'.$value['key'].'"></el-input></el-form-item>';
+        $html = '<el-form-item prop="' . $value['key'] . '" label="' . $value['title'] . '"><el-input v-model="' . $name . '.' . $value['key'] . '"></el-input></el-form-item>';
         return $html;
     }
 
 
-    public function setInputTextArea(array  $value,string $name) : string
+    public function setInputTextArea(array $value, string $name): string
     {
-        $html = '<el-form-item prop="'.$value['key'].'" label="'.$value['title'].'"><el-input type="textarea" v-model="'.$name.'.'.$value['key'].'"></el-input></el-form-item>';
+        $html = '<el-form-item prop="' . $value['key'] . '" label="' . $value['title'] . '"><el-input type="textarea" v-model="' . $name . '.' . $value['key'] . '"></el-input></el-form-item>';
         return $html;
     }
 
 
-    public function setCascader($value,$name)
+    public function setCascader($value, $name): string
     {
-        $html = '<el-form-item label="'.$value['title'].'"><el-cascader :props='.json_encode($value['prop']['props']).' v-model="'.$name .'.'.$value['key'].'" placeholder="输入关键字搜索" :options='.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().' filterable></el-cascader></el-form-item>';
+        $html = '<el-form-item label="' . $value['title'] . '"><el-cascader :props=' . json_encode($value['prop']['props']) . ' v-model="' . $name . '.' . $value['key'] . '" placeholder="输入关键字搜索" :options=' . call_user_func_array($value['prop']['callback'], [])->{$value['prop']['function']}() . ' filterable></el-cascader></el-form-item>';
         return $html;
     }
 
-    public function setUpload($value,$name,$controller)
+    public function setUpload($value, $name, $controller): string
     {
-        $html = '<el-form-item label="'.$value['title'].'"><el-upload class="avatar-uploader" action="/'.strtolower($controller).'/upload/field/'.$value['key'].'/name/'.$name.'" :show-file-list="false":on-success="handleSuccess"><img v-if="'.$name.'.'.$value['key'].'" :src="'.$name.'.'.$value['key'].'" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
+        $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/' . strtolower($controller) . '/upload/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false":on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
         return $html;
     }
 }

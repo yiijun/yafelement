@@ -1,0 +1,31 @@
+body,html,#app{height:100%; font-size: 12px;font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;}
+body{padding:0px;margin:0px;}
+.el-header, .el-footer {line-height: 60px;height: 60px;background-color: #fff;position: relative;z-index: 10;max-width: 100%; font-size: 12px}
+.el-header{-webkit-box-shadow: 0 2px 8px #f0f1f2;box-shadow: 0 2px 8px #f0f1f2;}
+.el-header{padding: 0 !important; display: flex; position: relative;flex-direction: row;}
+.logo{width:170px;padding-left: 55px;white-space: nowrap;text-decoration: none;line-height: 60px;overflow: hidden;height: 60px;float: left;position: relative}
+.head-right{float:left;flex: 0 0 auto;box-sizing: border-box; width: calc(100% - 200px)}
+.head-right .search{border-left: 1px solid #ebedf0;padding-left: 20px; line-height: 22px;line-height: 22px;margin: 22px auto 0;}
+.el-aside {color: #333;text-align: left;width: 200px;height: 100%; -webkit-box-shadow:  0px 1px 1px #ccc;box-shadow:  0px 1px 1px #ccc; }
+.main-wrapper{box-shadow: 0 2px 8px #f0f1f2;position: relative;background: #fff;padding-top: 20px;}
+.el-main {flex: 1;padding:20px;}
+.el-aside, .el-main {overflow: auto;-webkit-box-sizing: border-box;box-sizing: border-box;}
+.el-aside  a{text-decoration: none;color: #303133}
+.wrapper{height:100%;}
+.el-menu{border-right:none;list-style: none;position: relative;margin: 0;padding-left: 0;background-color: #fff;height:100%;}
+::-webkit-scrollbar {width: 3px;height: 3px;}
+::-webkit-scrollbar-thumb, ::-webkit-scrollbar-thumb:horizontal {border-radius: 6px;background: #BDBDBD;}
+::-webkit-scrollbar-button {display: none;}
+::-webkit-scrollbar-track, ::-webkit-scrollbar-track-piece {background: -webkit-gradient(linear,left)}
+::-webkit-scrollbar-track-piece {background: #FFF;}
+[v-cloak] {display: none;}
+.table-list{padding-top: 20px}
+.el-submenu__title *,.el-menu-item,.el-submenu__title,.el-breadcrumb{font-size: 12px}
+.el-dropdown{float: right;padding-right: 22px}
+.el-dropdown-link {cursor: pointer;color: #409EFF;}
+.el-icon-arrow-down {font-size: 12px;}
+.demonstration {display: block;color: #8492a6;font-size: 14px;margin-bottom: 20px;}
+.avatar-uploader .el-upload {border: 1px dashed #d9d9d9;border-radius: 6px;cursor: pointer;position: relative;overflow: hidden;}
+.avatar-uploader .el-upload:hover {border-color: #409EFF;}
+.avatar-uploader-icon {font-size: 28px;color: #8c939d;width: 100px;height: 100px;line-height: 100px;text-align: center;}
+.avatar {width: 100px;height: 100px;display: block;}
