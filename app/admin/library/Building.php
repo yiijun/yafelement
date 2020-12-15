@@ -85,9 +85,13 @@ class Building extends \Libs\Instance
                     if(empty($value['alias'])) {
                         $tableString .= '<el-table-column prop="' . $value['key'] . '" label="' . $value['title'] . '"></el-table-column>';
                     } else {
+                        //获取回调函数
+                        $option = call_user_func_array($value['alias']['callback'],[])->{$value['alias']['function']}();
+                        var_dump($option);
+                        $option = json_decode($option,true);
                         $tableString .= '<el-table-column   label="' . $value['title'] . '"><template scope="scope">';
-                        foreach ($value['alias'] as $idx => $item) {
-                            $tableString .= '<span v-if="scope.row.' . $value['key'] . '==' . $idx . '">' . $item . '</span>';
+                        foreach ($option as $idx => $item) {
+                            $tableString .= '<el-tag v-if="scope.row.' . $value['key'] . '==' . $item['id'] . '">' . $item['name'] . '</el-tag>';
                         }
                         $tableString .= '</template></el-table-column>';
                     }
@@ -230,6 +234,9 @@ class Building extends \Libs\Instance
                 case 'select':
                     $html .= $this->setSelect($value, $name);
                     break;
+                case 'radio':
+                    $html .= $this->setRadio($value, $name);
+                    break;
                 default:
                     break;
             }
@@ -309,6 +316,12 @@ class Building extends \Libs\Instance
     public function setUpload($value, $name, $controller): string
     {
         $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/' . strtolower($controller) . '/upload/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false":on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
+        return $html;
+    }
+
+    public function setRadio($value,$name) :string
+    {
+        $html = '<el-form-item label="'.$value['title'].'"><el-radio-group v-model="' . $name . '.' . $value['key'] . '"><el-radio v-for=\'(item,index) in '.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().'\' :label="item.id.toString()">{{item.name}}</el-radio></el-radio-group></el-form-item>';
         return $html;
     }
 }
