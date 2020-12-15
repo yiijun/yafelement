@@ -37,7 +37,9 @@ class Building extends \Libs\Instance
 
     public function renderClearForm($fields = [])
     {
-        $form = [];
+        $form = [
+            'id' => 0
+        ];
         foreach ($fields as $key => $value) {
             $form[$value['key']] = $value['value'];
         }
@@ -66,23 +68,32 @@ class Building extends \Libs\Instance
 
     /**
      * @param array $fields
+     * @param string $pri
      * @return string
      * 渲染table
      */
-    public function renderTable(array $fields): string
+    public function renderTable(array $fields, string $pri): string
     {
-        $tableString = '<el-table-column prop="id" label="Id"></el-table-column>';
+        $tableString = '<el-table-column prop="' . $pri . '" label="' . $pri . '"></el-table-column>';
         foreach ($fields as $key => $value) {
             if(isset($value['isTable']) && $value['isTable'] === true) continue;
-            if(empty($value['alias'])) {
-                $tableString .= '<el-table-column prop="' . $value['key'] . '" label="' . $value['title'] . '"></el-table-column>';
-            } else {
-                $tableString .= '<el-table-column   label="' . $value['title'] . '"><template scope="scope">';
-                foreach ($value['alias'] as $idx => $item) {
-                    $tableString .= '<span v-if="scope.row.' . $value['key'] . '==' . $idx . '">' . $item . '</span>';
-                }
-                $tableString .= '</template></el-table-column>';
+            switch ($value['type']) {
+                case 'upload':
+                    $tableString .= '<el-table-column label="' . $value['title'] . '"><template scope="scope"><img :src="scope.row.' . $value['key'] . '" width="' . $value['width'] . '"></template></el-table-column>';
+                    break;
+                default:
+                    if(empty($value['alias'])) {
+                        $tableString .= '<el-table-column prop="' . $value['key'] . '" label="' . $value['title'] . '"></el-table-column>';
+                    } else {
+                        $tableString .= '<el-table-column   label="' . $value['title'] . '"><template scope="scope">';
+                        foreach ($value['alias'] as $idx => $item) {
+                            $tableString .= '<span v-if="scope.row.' . $value['key'] . '==' . $idx . '">' . $item . '</span>';
+                        }
+                        $tableString .= '</template></el-table-column>';
+                    }
+                    break;
             }
+
         }
         $tableString .= '<el-table-column prop="create_time" label="时间"></el-table-column>';
         return $tableString;
@@ -213,6 +224,12 @@ class Building extends \Libs\Instance
                 case 'upload':
                     $html .= $this->setUpload($value, $name, $controller);
                     break;
+                case 'number':
+                    $html .= $this->setInputNumber($value, $name);
+                    break;
+                case 'select':
+                    $html .= $this->setSelect($value, $name);
+                    break;
                 default:
                     break;
             }
@@ -224,6 +241,7 @@ class Building extends \Libs\Instance
      * @param array $value
      * @param string $name
      * @return string
+     * 文本域
      */
     public function setInputText(array $value, string $name): string
     {
@@ -231,7 +249,25 @@ class Building extends \Libs\Instance
         return $html;
     }
 
+    /**
+     * @param array $value
+     * @param string $name
+     * @return string
+     * 整形输入框
+     */
+    public function setInputNumber(array $value, string $name): string
+    {
+        $html = '<el-form-item prop="' . $value['key'] . '" label="' . $value['title'] . '"><el-input-number v-model="' . $name . '.' . $value['key'] . '"></el-input-number></el-form-item>';
+        return $html;
+    }
 
+
+    /**
+     * @param array $value
+     * @param string $name
+     * @return string
+     * 文本域
+     */
     public function setInputTextArea(array $value, string $name): string
     {
         $html = '<el-form-item prop="' . $value['key'] . '" label="' . $value['title'] . '"><el-input type="textarea" v-model="' . $name . '.' . $value['key'] . '"></el-input></el-form-item>';
@@ -239,12 +275,37 @@ class Building extends \Libs\Instance
     }
 
 
+    /**
+     * @param $value
+     * @param $name
+     * @return string
+     * 级联
+     */
     public function setCascader($value, $name): string
     {
         $html = '<el-form-item label="' . $value['title'] . '"><el-cascader :props=' . json_encode($value['prop']['props']) . ' v-model="' . $name . '.' . $value['key'] . '" placeholder="输入关键字搜索" :options=' . call_user_func_array($value['prop']['callback'], [])->{$value['prop']['function']}() . ' filterable></el-cascader></el-form-item>';
         return $html;
     }
 
+    /**
+     * @param $value
+     * @param $name
+     * @return string
+     * select 选择器
+     */
+    public function setSelect($value, $name): string
+    {
+        $html = '<el-form-item label="' . $value['title'] . '"><el-select v-model="' . $name . '.' . $value['key'] . '" placeholder="请选择' . $value['title'] . '"><el-option v-for=\'(item,index) in '.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().'\' :label="item.name" :value="item.id"></el-option></el-select></el-form-item>';
+        return $html;
+    }
+
+    /**
+     * @param $value
+     * @param $name
+     * @param $controller
+     * @return string
+     * 上传
+     */
     public function setUpload($value, $name, $controller): string
     {
         $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/' . strtolower($controller) . '/upload/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false":on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';

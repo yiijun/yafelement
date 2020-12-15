@@ -6,58 +6,17 @@ namespace Composer\Autoload;
 
 class ComposerStaticInitb4727e7d62f76b515e8e6276cef49b63
 {
-    public static $files = array (
-        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
-    );
-
     public static $prefixLengthsPsr4 = array (
-        'R' => 
-        array (
-            'React\\Promise\\' => 14,
-        ),
-        'P' => 
-        array (
-            'Psr\\Log\\' => 8,
-        ),
         'L' => 
         array (
             'Libs\\' => 5,
         ),
-        'G' => 
-        array (
-            'GuzzleHttp\\Stream\\' => 18,
-            'GuzzleHttp\\Ring\\' => 16,
-        ),
-        'E' => 
-        array (
-            'Elasticsearch\\' => 14,
-        ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'React\\Promise\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/react/promise/src',
-        ),
-        'Psr\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
-        ),
         'Libs\\' => 
         array (
             0 => __DIR__ . '/../..' . '/libs',
-        ),
-        'GuzzleHttp\\Stream\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/streams/src',
-        ),
-        'GuzzleHttp\\Ring\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/ringphp/src',
-        ),
-        'Elasticsearch\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/elasticsearch/elasticsearch/src/Elasticsearch',
         ),
     );
 

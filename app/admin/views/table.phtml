@@ -1,6 +1,6 @@
 <template>
     <el-table :default-expand-all="true" row-key="id" :tree-props="{children: 'children'}" :data="<?php echo Building::getInstance()->renderSearch($search)?>">
-        <?php echo Building::getInstance()->renderTable($fields)?>
+        <?php echo Building::getInstance()->renderTable($fields,$pri)?>
         <el-table-column align="right">
             <template slot="header" slot-scope="scope">
                 <el-input v-model="search" size="mini" placeholder="输入关键字搜索" style="max-width: 300px"/>
