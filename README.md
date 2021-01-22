@@ -1,7 +1,7 @@
 # yafelement
 在yaf的基础上做了一点优化，支持多域名、多平台、多环境（生产、测试、开发）独立配置、自动加载、常驻内存、分布式代码、已构建核心类库、一个非常灵活的api架构。
 
-**解决问题**
+##解决问题
 
 - 解决了使用yaf多模块无法继承BaseController的问题
 
@@ -13,20 +13,121 @@
 
 - 组件共享，多域名组件共享
 
+- 项目解耦，可将项目模块化，业务单独部署
+
 改进一下yaf,除了具备yaf的功能之外，更加拥有更加强大的能力，可以用于大型项目的基础架构；
 
-**安装**
+##后台
 
-安装yaf扩展即可
+element ui + vue 
 
-**域名配置(host 文件)**
+
+##功能
+
+- 设置模型字段，自动生成表单、表格、渲染视图、表单验证等（增删改查操作），简而言之，项目中一个模块只需要设置模型，增删改查将自动生成，支持自定义和重写，总之如果你要搭建一个后台管理系统，那么它将是你不错得选择；
+
+- 图标功能、柱形图、折线图
+
+- 支持本地上传、oss上传，只要开启上传将会自动上传到oss
+
+- markdown支持
+
+- 网站配置
+
+- 菜单设置（支持无限极菜单，自动渲染，后台只需要添加即可）
+
+- 管理员设置
+
+
+## 组件
+
+- composer
+
+- pdo
+
+- file
+
+- api
+
+- http curl
+
+- session
+
+- log(日志处理)
+
+- server
+    
+    - 腾讯oss
+
+- redis
+
+- apcu
+    
+- common
+
+
+
+##安装
+
+- 安装yaf扩展
+
+    - 开启：use_namespace
+    - 开启：lowcase_path
+    - 开启：use_spl_autoload
+    - 设置：environ
+
+php.ini 增加一下配置
+
+```$xslt
+[Yaf]
+yaf.use_namespace = 1
+yaf.environ  = "develop"
+yaf.lowcase_path =1
+yaf.use_spl_autoload=1
+```
+
+- git clone https://gitee.com/phpbloger/yafelement.git
+
+- 配置数据库:conf//开发环境//对应模块.ini
+
+
+```$xslt
+[db]
+db.default.host = "127.0.0.1"
+db.default.port = 3306
+db.default.dbname = "yafelement"
+db.default.charset = "utf8"
+db.default.username = "root"
+db.default.passwd = "root"
+
+```
+- 配置nginx 或者apache,配置在下方
+
+- 运行即可
+
+
+##注意
+如果实在wamp环境下只需要开启命名空间即可。
+
+如果实在lnmp环境上运行该框架必须确保一下配置开启：
+
+```
+#确保命名空间开启
+yaf.use_namespace=1
+#确保文件以小写开头加载
+yaf.lowcase_path=1
+#确保可以使用其他文件加载方式，我们采用psr-4加载核心类库
+yaf.use_spl_autoload=1
+```
+
+##host
 
 > 127.0.0.1      admin.yaf-element.com
 
 > 127.0.0.1      home.yaf-element.com
 
 
-**虚拟主机配置**
+##虚拟主机配置
 
 > apache 
 
@@ -205,19 +306,6 @@ server
 
 以上配置根据自身情况修改即可；
 
-####注意
-如果实在wamp环境下只需要开启命名空间即可。
-
-如果实在lnmp环境上运行该框架必须确保一下配置开启：
-
-```
-#确保命名空间开启
-yaf.use_namespace=1
-#确保文件以小写开头加载
-yaf.lowcase_path=1
-#确保可以使用其他文件加载方式，我们采用psr-4加载核心类库
-yaf.use_spl_autoload=1
-```
 
 该版本已经集成了markdown并且组件化，增加腾讯云上传
 
