@@ -74,7 +74,7 @@ class RouteModel extends AbstractModel
             ],
         ]
     ];
-    
+
     public $search = ['name'];
 
     public $reload = true;//是否重载页面
