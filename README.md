@@ -30,6 +30,8 @@
 
 > apache 
 
+后台
+
 ```
 <VirtualHost *:80>
     DocumentRoot "D:\phpStudy\WWW\yafelement\public\admin"
@@ -45,6 +47,7 @@
 </VirtualHost>
 ```
 
+home
 
 ```
 <VirtualHost *:80>
@@ -61,6 +64,160 @@
 </VirtualHost>
 ```
 
-增加了中控后台
+>nginx
 
+后台
+
+```php
+server
+{
+    listen 80;
+	listen 443 ssl http2;
+    server_name admin.yaf-element.com;
+    index index.php index.html index.htm default.php default.htm default.html;
+    root /www/wwwroot/admin.yaf-element.com/public/home;
+    
+    #SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则
+    #error_page 404/404.html;
+    ssl_certificate    /www/server/panel/vhost/cert/admin.yaf-element.com/fullchain.pem;
+    ssl_certificate_key    /www/server/panel/vhost/cert/admin.yaf-element.com/privkey.pem;
+    ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
+    ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    add_header Strict-Transport-Security "max-age=31536000";
+    error_page 497  https://$host$request_uri;
+    #SSL-END
+	
+    
+    #ERROR-PAGE-START  错误页配置，可以注释、删除或修改
+    #error_page 404 /404.html;
+    #error_page 502 /502.html;
+    #ERROR-PAGE-END
+    
+    #PHP-INFO-START  PHP引用配置，可以注释或修改
+    include enable-php-74.conf;
+    #PHP-INFO-END
+    
+    #REWRITE-START URL重写规则引用,修改后将导致面板设置的伪静态规则失效
+    include /www/server/panel/vhost/rewrite/admin.yaf-element.com.conf;
+    #REWRITE-END
+    
+    #禁止访问的文件或目录
+    location ~ ^/(\.user.ini|\.htaccess|\.git|\.svn|\.project|LICENSE|README.md)
+    {
+        return 404;
+    }
+    
+    #一键申请SSL证书验证目录相关设置
+    location ~ \.well-known{
+        allow all;
+    }
+    
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+    {
+        expires      30d;
+        error_log /dev/null;
+        access_log off;
+    }
+    
+    location ~ .*\.(js|css)?$
+    {
+        expires      12h;
+        error_log /dev/null;
+        access_log off; 
+    }
+    access_log  /dev/null;
+    error_log  /www/wwwlogs/admin.yaf-element.com.error.log;
+}
+
+```
+
+home
+
+```
+server
+{
+    listen 80;
+	listen 443 ssl http2;
+    server_name home.yaf-element.com;
+    index index.php index.html index.htm default.php default.htm default.html;
+    root /www/wwwroot/home.yaf-element.com/public/home;
+    
+    #SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则
+    #error_page 404/404.html;
+    ssl_certificate    /www/server/panel/vhost/cert/home.yaf-element.com/fullchain.pem;
+    ssl_certificate_key    /www/server/panel/vhost/cert/home.yaf-element.com/privkey.pem;
+    ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
+    ssl_ciphers EECDH+CHACHA20:EECDH+CHACHA20-draft:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    add_header Strict-Transport-Security "max-age=31536000";
+    error_page 497  https://$host$request_uri;
+
+    #SSL-END
+
+    
+    #ERROR-PAGE-START  错误页配置，可以注释、删除或修改
+    #error_page 404 /404.html;
+    #error_page 502 /502.html;
+    #ERROR-PAGE-END
+    
+    #PHP-INFO-START  PHP引用配置，可以注释或修改
+    include enable-php-74.conf;
+    #PHP-INFO-END
+    
+    #REWRITE-START URL重写规则引用,修改后将导致面板设置的伪静态规则失效
+    include /www/server/panel/vhost/rewrite/home.yaf-element.com.cn.conf;
+    #REWRITE-END
+    
+    #禁止访问的文件或目录
+    location ~ ^/(\.user.ini|\.htaccess|\.git|\.svn|\.project|LICENSE|README.md)
+    {
+        return 404;
+    }
+    
+    #一键申请SSL证书验证目录相关设置
+    location ~ \.well-known{
+        allow all;
+    }
+    
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+    {
+        expires      30d;
+        error_log /dev/null;
+        access_log off;
+    }
+    
+    location ~ .*\.(js|css)?$
+    {
+        expires      12h;
+        error_log /dev/null;
+        access_log off; 
+    }
+    access_log  /dev/null;
+    error_log  /www/wwwlogs/home.yaf-element.com.error.log;
+}
+
+```
+
+以上配置根据自身情况修改即可；
+
+####注意
+如果实在wamp环境下只需要开启命名空间即可。
+
+如果实在lnmp环境上运行该框架必须确保一下配置开启：
+
+```
+#确保命名空间开启
+yaf.use_namespace=1
+#确保文件以小写开头加载
+yaf.lowcase_path=1
+#确保可以使用其他文件加载方式，我们采用psr-4加载核心类库
+yaf.use_spl_autoload=1
+```
+
+该版本已经集成了markdown并且组件化，增加腾讯云上传
 
