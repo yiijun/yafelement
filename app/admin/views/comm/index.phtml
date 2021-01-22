@@ -2,7 +2,8 @@
 <el-main>
     <?php Yaf\Loader::import(__DIR__.'/../breadcrumb.phtml');?>
     <div class="table-list">
-        <el-button style="margin-bottom: 15px" type="primary" @click="dialog=true">添加</el-button>
+        <el-button style="margin-bottom: 15px" type="primary" v-if="markdown==true" @click="editor()">添加</el-button>
+        <el-button style="margin-bottom: 15px" type="primary" @click="dialog=true" v-else>添加</el-button>
         <!--通用表格-->
         <?php Yaf\Loader::import(__DIR__.'/../table.phtml');?>
         <!--通用的表单-->

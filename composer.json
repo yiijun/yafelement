@@ -6,9 +6,10 @@
     }
   ],
   "require": {
-    "php": ">=7.0.4"
+    "php": ">=7.0.4",
+    "qcloud/cos-sdk-v5": ">=2.0"
   },
   "autoload": {
-    "psr-4": {"Libs\\": "libs/"}
+    "psr-4": {"libs\\": "libs/"}
   }
 }
