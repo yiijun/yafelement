@@ -39,7 +39,7 @@ class LoginController extends \Yaf\Controller_Abstract
 
     public function logoutAction()
     {
-        $res = \Yaf\Session::getInstance()->del('login_info');
-        return Common::getInstance()->send($res);
+        \Yaf\Session::getInstance()->del('login_info');
+        $this->redirect("/Login/index");
     }
 }
