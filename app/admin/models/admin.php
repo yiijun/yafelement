@@ -23,6 +23,48 @@ class AdminModel extends AbstractModel
             'key' => 'pwd',
             'isTable' => true
         ],
+        [
+            'type' => 'cascader',
+            'value' => '',
+            'title' => '所属上级',
+            'key' => 'pid',
+            'show' => [],
+            'prop' => [
+                'callback' => ['AdminModel','getInstance'], //回调方法拉取级联数据
+                'function' => 'getParentAdmin',
+                'props' => [
+                    'levels' => false,   //定义是否显示完整的路径
+                    'emitPath' => false, //定义是否返回最后一级得数据，true 返回一个数组
+                    'checkStrictly' => true, //开启之后可以选择任意一级
+                    'label' => 'name',
+                    'value' => 'id',
+                ]
+            ],
+            'isTable' => true,
+        ],
+        [
+            'type' => 'select',
+            'value' => '',
+            'title' => '所属角色',
+            'key' => 'role_id',
+            'show' => [],
+            'prop' => [
+                'callback' => ['RoleModel','getInstance'], //回调方法拉取级联数据
+                'function' => 'getRoleAll',
+                'props' => [
+                    'label' => 'name',
+                    'value' => 'id',
+                ]
+            ],
+            'alias' => [
+                'callback' => ['RoleModel', 'getInstance'],
+                'function' => 'getRoleAll',
+                'props' => [
+                    'label' => 'name',
+                    'value' => 'id',
+                ]
+            ],
+        ],
     ];
 
     public $validate = [
@@ -43,18 +85,70 @@ class AdminModel extends AbstractModel
 
     public $search = ['username'];
 
+    /**
+     * @param $id
+     * @return array|mixed
+     * 获取一条
+     */
+    public function getRowById($id)
+    {
+        return pdo::getInstance()->fetch("SELECT `id`,`role_id` FROM `{$this->table}` WHERE `id`=?",[$id]);
+    }
 
+
+    /**
+     * @return string
+     * 级联选择回调函数
+     */
+    public function getParentAdmin() : string
+    {
+        $data = Pdo::getInstance()->fetchAll("SELECT `id`,`username` as `name`,`pid`,`role_id` FROM `{$this->table}`",[]);
+        $tree = $this->treeRoute($data,0,0);
+        return json_encode($tree,JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * @param array $data
+     * @param int $pid
+     * @param int $deep
+     * @return array
+     * 无限极
+     */
+    public function  treeRoute(array $data,int $pid,int $deep=0) : array
+    {
+        $tree=[];
+        foreach ($data as $row) {
+            if($row['pid'] == $pid){
+                $row['deep'] = $deep;
+                $row['children'] = $this->treeRoute($data,$row['id'],$deep+1);
+                $tree[] = $row;
+            }
+        }
+        return $tree;
+    }
+
+
+    /**
+     * @param $page
+     * @param int $num
+     * @return array
+     * 重写列表
+     */
     public function renderPage($page,$num = 15) : array
     {
         $start = $page ? ($page - 1) * $num : 0;
-        $list = Pdo::getInstance()->fetchAll('SELECT `id`,`username`,`create_time` FROM `'.$this->table.'` ORDER BY `id` DESC LIMIT ?,'.$num, [$start]);
-        $count= Pdo::getInstance()->fetch('SELECT count(*) as `total` FROM `'.$this->table.'`',[]);
+        $list = Pdo::getInstance()->fetchAll('SELECT `id`,`username`,`create_time`,`role_id`,`login_time` FROM `'.$this->table.'` WHERE `id` > 1 ORDER BY `id` DESC LIMIT ?,'.$num, [$start]);
+        $count= Pdo::getInstance()->fetch('SELECT count(*) as `total` FROM `'.$this->table.'` WHERE `id` > 1',[]);
         return [
             'list' => $list,
             'total' => intval($count['total'] )
         ];
     }
 
+    /**
+     * @return int
+     * 重写post表单提交
+     */
     public function renderPost() : int
     {
         try {

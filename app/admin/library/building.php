@@ -5,7 +5,9 @@
  * Date: 2019-12-23
  * Time: 14:26
  */
+
 use libs\instance;
+
 class Building extends Instance
 {
     /**
@@ -85,11 +87,11 @@ class Building extends Instance
                         $tableString .= '<el-table-column  prop="' . $value['key'] . '" label="' . $value['title'] . '"></el-table-column>';
                     } else {
                         //获取回调函数
-                        $option = call_user_func_array($value['alias']['callback'],[])->{$value['alias']['function']}();
-                        $option = json_decode($option,true);
+                        $option = call_user_func_array($value['alias']['callback'], [])->{$value['alias']['function']}();
+                        $option = json_decode($option, true);
                         $tableString .= '<el-table-column   label="' . $value['title'] . '"><template scope="scope">';
                         foreach ($option as $idx => $item) {
-                            $tableString .= '<el-tag v-if="scope.row.' . $value['key'] . '==' . $item['id'] . '">' . $item['name'] . '</el-tag>';
+                            $tableString .= '<el-tag v-if="scope.row.' . $value['key'] . '==' . $item[$value['alias']['props']['value']] . '">' . $item[$value['alias']['props']['label']] . '</el-tag>';
                         }
                         $tableString .= '</template></el-table-column>';
                     }
@@ -236,7 +238,11 @@ class Building extends Instance
                     $html .= $this->setRadio($value, $name);
                     break;
                 case 'editor':
-                    $html .= $this->setEditor($value,$name);
+                    $html .= $this->setEditor($value, $name);
+                    break;
+                case 'tree':
+                    $html .= $this->setTree($value, $name);
+                    break;
                 default:
                     break;
             }
@@ -302,7 +308,7 @@ class Building extends Instance
      */
     public function setSelect($value, $name): string
     {
-        $html = '<el-form-item label="' . $value['title'] . '"><el-select v-model="' . $name . '.' . $value['key'] . '" placeholder="请选择' . $value['title'] . '"><el-option v-for=\'(item,index) in '.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().'\' :label="item.name" :value="item.id"></el-option></el-select></el-form-item>';
+        $html = '<el-form-item label="' . $value['title'] . '"><el-select v-model="' . $name . '.' . $value['key'] . '" placeholder="请选择' . $value['title'] . '"><el-option v-for=\'(item,index) in ' . call_user_func_array($value['prop']['callback'], [])->{$value['prop']['function']}() . '\' :label="item.'.$value['prop']['props']['label'].'" :value="item.'.$value['prop']['props']['value'].'"></el-option></el-select></el-form-item>';
         return $html;
     }
 
@@ -318,9 +324,9 @@ class Building extends Instance
         $oss_onoff = \Yaf\Application::app()->getConfig()->application->oss_onoff;
 
         //如果开启oss,文件将自动上传到oss，否则上传到本地
-        if($oss_onoff == true){
+        if($oss_onoff == true) {
             $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/upload/post/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false":on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
-        }else{
+        } else {
             $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/upload/form/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false":on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
         }
 
@@ -333,9 +339,9 @@ class Building extends Instance
      * @return string
      * 单选
      */
-    public function setRadio($value,$name) :string
+    public function setRadio($value, $name): string
     {
-        $html = '<el-form-item label="'.$value['title'].'"><el-radio-group v-model="' . $name . '.' . $value['key'] . '"><el-radio v-for=\'(item,index) in '.call_user_func_array($value['prop']['callback'],[])->{$value['prop']['function']}().'\' :label="item.id.toString()">{{item.name}}</el-radio></el-radio-group></el-form-item>';
+        $html = '<el-form-item label="' . $value['title'] . '"><el-radio-group v-model="' . $name . '.' . $value['key'] . '"><el-radio v-for=\'(item,index) in ' . call_user_func_array($value['prop']['callback'], [])->{$value['prop']['function']}() . '\' :label="item.id.toString()">{{item.name}}</el-radio></el-radio-group></el-form-item>';
         return $html;
     }
 
@@ -345,7 +351,7 @@ class Building extends Instance
      * @return string
      * 设置markdown 编辑器
      */
-    public function setEditor($value,$name)
+    public function setEditor($value, $name)
     {
         $html = '<el-form-item name="editor_content" prop="' . $value['key'] . '" label="' . $value['title'] . '"><div id="editor_content"><textarea v-model="' . $name . '.' . $value['key'] . '" style="display:none;"></textarea></div></el-form-item>';
         return $html;

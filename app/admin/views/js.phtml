@@ -1,26 +1,26 @@
 <script>
     var vm = new Vue({
         el: '#app',
-        data:<?php echo Building::getInstance()->renderForm('form',$fields,$validate,$extra);?>,
+        data:<?php echo Building::getInstance()->renderForm('form', $fields, $validate, $extra);?>,
         methods: {
-            submitForm:function(formName) {
+            submitForm: function (formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        if(vm.markdown == true){
+                        if (vm.markdown == true) {
                             eval(vm.markdown_eval)
                         }
-                        $.post('/<?php echo $controller."/post"?>', vm.form).done(function(response) {
-                            if(200 == response.code){
+                        $.post('/<?php echo $controller . "/post"?>', vm.form).done(function (response) {
+                            if (200 == response.code) {
                                 vm.form = <?php echo Building::getInstance()->renderClearForm($fields)?>;
                                 vm.$message.success(response.msg);
-                                let is_reload = <?php echo $reload?:0?>;
-                                if(is_reload){
+                                let is_reload = <?php echo $reload ?: 0?>;
+                                if (is_reload) {
                                     window.location.reload();
-                                }else{
+                                } else {
                                     vm.init();
                                 }
                                 vm.dialog = false
-                            }else{
+                            } else {
                                 vm.$message.error(response.msg);
                             }
                         })
@@ -30,26 +30,40 @@
                 });
             },
             handleSuccess(response, file) {
-                if(response.code == 200){
+                if (response.code == 200) {
                     eval(response.data.path)
-                }else{
+                } else {
                     vm.$message.error(response.msg);
                 }
             },
-            saveForm:function (idx,row) {
+            saveForm: function (idx, row) {
+
+                //如果有json字符串就转义回去
+                $.each(row, function (k, v) {
+                    let json = vm.isJson(v)
+                    if (json != false) {
+                        eval("row." + k + "=json");
+                    }
+                })
+
                 vm.form = row
                 vm.dialog = true
-                if(vm.markdown == true){
+                if (vm.markdown == true) {
                     vm.editor()
                 }
+                console.log(vm.form)
             },
-            deleteForm:function (idx,row) {
-                this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning'}).then(() => {
-                    $.post('/<?php echo $controller."/delete"?>', {id:row.id}).done(function(response) {
-                        if(200 == response.code){
+            deleteForm: function (idx, row) {
+                this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    $.post('/<?php echo $controller . "/delete"?>', {id: row.id}).done(function (response) {
+                        if (200 == response.code) {
                             vm.$message.success(response.msg);
                             vm.init();
-                        }else{
+                        } else {
                             vm.$message.error(response.msg);
                         }
                     })
@@ -57,37 +71,52 @@
                     this.$message({type: 'info', message: '已取消删除'});
                 });
             },
-            init:function (page) {
-                $.post('/<?php echo $controller."/index"?>', {page:page}).done(function(response) {
-                    if(200 == response.code){
+            init: function (page) {
+                $.post('/<?php echo $controller . "/index"?>', {page: page}).done(function (response) {
+                    if (200 == response.code) {
                         vm.table = response.data.list
                         vm.total = response.data.total
-                    }else{
+                    } else {
                         vm.$message.error(response.msg);
                     }
                 })
             },
             //开启markdown
-            editor:function () {
+            editor: function () {
                 vm.dialog = true
                 setTimeout(function () {
-                        let edit = editormd("editor_content", {
-                            width  : "100%",
-                            height : "500px",
-                            path   : "/static/editor.md/lib/",
-                            emoji:false,
-                            tocm:true,
-                            flowChart:true,
-                            sequenceDiagram:true,
-                            imageUpload:true,
-                            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-                            imageUploadURL : "/upload/editor",
-                        });
-                        vm.editors = edit
-                },300)
+                    let edit = editormd("editor_content", {
+                        width: "100%",
+                        height: "500px",
+                        path: "/static/editor.md/lib/",
+                        emoji: false,
+                        tocm: true,
+                        flowChart: true,
+                        sequenceDiagram: true,
+                        imageUpload: true,
+                        imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                        imageUploadURL: "/upload/editor",
+                    });
+                    vm.editors = edit
+                }, 300)
+            },
+
+            isJson: function (str) {
+                if (typeof str == 'string') {
+                    try {
+                        var obj = JSON.parse(str);
+                        if (typeof obj == 'object' && obj) {
+                            return obj;
+                        } else {
+                            return false;
+                        }
+                    } catch (e) {
+                        return false;
+                    }
+                }
             }
         },
-        mounted:function () {
+        mounted: function () {
             this.init(0);
         },
     })

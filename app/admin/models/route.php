@@ -4,7 +4,10 @@
  * Date: 2019-12-25
  * Time: 14:03
  */
+
 use  \libs\db\pdo;
+use \libs\cache\session;
+
 class RouteModel extends AbstractModel
 {
     public $table = 'yaf_route';
@@ -28,7 +31,7 @@ class RouteModel extends AbstractModel
             'key' => 'pid',
             'show' => [],
             'prop' => [
-                'callback' => ['RouteModel','getInstance'], //回调方法拉取级联数据
+                'callback' => ['RouteModel', 'getInstance'], //回调方法拉取级联数据
                 'function' => 'getParentRoute',
                 'props' => [
                     'levels' => false,   //定义是否显示完整的路径
@@ -83,11 +86,11 @@ class RouteModel extends AbstractModel
      * @return string
      * 级联选择回调函数
      */
-    public function getParentRoute() : string
+    public function getParentRoute(): string
     {
-        $data = Pdo::getInstance()->fetchAll("SELECT `id`,`name`,`pid` FROM `{$this->table}`",[]);
-        $tree = $this->treeRoute($data,0,0);
-        return json_encode($tree,JSON_UNESCAPED_UNICODE);
+        $data = Pdo::getInstance()->fetchAll("SELECT `id`,`name`,`pid` FROM `{$this->table}`", []);
+        $tree = $this->treeRoute($data, 0, 0);
+        return json_encode($tree, JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -96,13 +99,13 @@ class RouteModel extends AbstractModel
      * @param int $deep
      * @return array
      */
-    public function  treeRoute(array $data,int $pid,int $deep=0) : array
+    public function treeRoute(array $data, int $pid, int $deep = 0): array
     {
-        $tree=[];
+        $tree = [];
         foreach ($data as $row) {
-            if($row['pid'] == $pid){
+            if($row['pid'] == $pid) {
                 $row['deep'] = $deep;
-                $row['children'] = $this->treeRoute($data,$row['id'],$deep+1);
+                $row['children'] = $this->treeRoute($data, $row['id'], $deep + 1);
                 $tree[] = $row;
             }
         }
@@ -115,30 +118,41 @@ class RouteModel extends AbstractModel
      * @return array
      * 重写render
      */
-    public function renderPage($page,$num = 15) : array
+    public function renderPage($page, $num = 15): array
     {
         $start = $page ? ($page - 1) * $num : 0;
-        $list = Pdo::getInstance()->fetchAll('SELECT * FROM `'.$this->table.'` ORDER BY `id` DESC LIMIT ?,'.$num, [$start]); //递归
-        $tree = $this->treeRoute($list,0,0);
-        $count= Pdo::getInstance()->fetch('SELECT count(*) as `total` FROM `'.$this->table.'`',[]);
+        $list = Pdo::getInstance()->fetchAll('SELECT * FROM `' . $this->table . '` ORDER BY `id` DESC LIMIT ?,' . $num, [$start]); //递归
+        $tree = $this->treeRoute($list, 0, 0);
+        $count = Pdo::getInstance()->fetch('SELECT count(*) as `total` FROM `' . $this->table . '`', []);
         return [
             'list' => $tree,
-            'total' => intval($count['total'] )
+            'total' => intval($count['total'])
         ];
     }
 
-    public function getRowByRoute(string $route) :array
+    public function getRowByRoute(string $route): array
     {
-        return Pdo::getInstance()->fetch('SELECT `id`,`pid`,`route`,`name` FROM `'.$this->table.'` WHERE `route` = ?',[$route]) ?:[];
+        return Pdo::getInstance()->fetch('SELECT `id`,`pid`,`route`,`name` FROM `' . $this->table . '` WHERE `route` = ?', [$route]) ?: [];
     }
 
-    public function getRowById(int $id) :array
+    public function getRowById(int $id): array
     {
-        return Pdo::getInstance()->fetch('SELECT `id`,`pid`,`route`,`name` FROM `'.$this->table.'` WHERE `id` = ?',[$id]);
+        return Pdo::getInstance()->fetch('SELECT `id`,`pid`,`route`,`name` FROM `' . $this->table . '` WHERE `id` = ?', [$id]);
     }
 
+
+    //获取当前角色菜单
     public function getAll()
     {
-        return Pdo::getInstance()->fetchAll('SELECT * FROM `'.$this->table.'`');
+        $login_info = Session::getInstance()->get('login_info');
+
+        if($login_info['id'] > 1) {
+            $admin = AdminModel::getInstance()->getRowById($login_info['id']);
+            //获取权限角色role_id
+            $role = RoleModel::getInstance()->getRoleByUid($admin['role_id']);
+            //查权限
+            return Pdo::getInstance()->fetchAll("SELECT * FROM `{$this->table}` WHERE id in ({$role['selected']})");
+        }
+        return Pdo::getInstance()->fetchAll('SELECT * FROM `' . $this->table . '`');
     }
 }
