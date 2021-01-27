@@ -29,9 +29,12 @@ class BaseController extends \Yaf\Controller_Abstract
         $this->controller = $this->_request->controller;
         $this->action = $this->_request->action;
         $this->model = $this->controller.'Model';
+        $this->config = \ConfigModel::getInstance()->conf();
         $this->_view->assign([
             'controller' => $this->controller,
-            'action'=> $this->action
+            'action'=> $this->action,
+            'login_info' => $this->login_info,
+            'config' => $this->config
         ]);
     }
 

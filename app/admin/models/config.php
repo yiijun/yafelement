@@ -56,4 +56,13 @@ class ConfigModel extends AbstractModel
         return \libs\db\pdo::getInstance()->fetchAll("SELECT * FROM `{$this->table}`",[]);
     }
 
+    public function conf()
+    {
+        $config = $this->read();
+        $res = [];
+        foreach ($config as $k => $v){
+            $res[$v['key']] = $v['value'];
+        }
+        return $res;
+    }
 }

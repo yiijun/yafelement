@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>炫纹科技后台管理中心</title>
+    <title><?php echo $config['sys_title'];?></title>
     <link rel="stylesheet" href="/static/element-ui@2.13.0/css/index.css">
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/editor.md/css/editormd.css" />
@@ -12,14 +12,14 @@
     <el-container class="wrapper">
         <el-header>
             <div class="logo">
-                <img src="/static/images/logo.png" height="30" style="position: absolute; top: 15px; left: 10px">小程序后台
+                <img src="<?php echo $config['log']?>" height="30" style="position: absolute; top: 15px; left: 10px">小程序后台
             </div>
             <div class="head-right">
                 <div class="search">
                     <span style="color: #ccc">文档中心</span>
                     <el-dropdown trigger="click">
                           <span class="el-dropdown-link el-icon-user">
-                            admin<i class="el-icon-arrow-down el-icon--right"></i>
+                            <?php echo $login_info['username']?><i class="el-icon-arrow-down el-icon--right"></i>
                           </span>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item icon="el-icon-circle-plus"><a  style="color: #606266; text-decoration: none" href="/login/logout">退出</a></el-dropdown-item>
