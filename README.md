@@ -91,7 +91,33 @@ yaf.lowcase_path =1
 yaf.use_spl_autoload=1
 ```
 
-- git clone https://gitee.com/phpbloger/yafelement.git
+- 克隆代码
+
+```angular2html
+git clone https://gitee.com/phpbloger/yafelement.git
+```
+
+
+由于项目增加了腾讯oss,如果需要请切换腾讯镜像：
+
+
+```angular2html
+
+composer config -g repos.packagist composer https://mirrors.tencent.com/composer/
+
+```
+
+
+不需要请删除composer.json中"qcloud/cos-sdk-v5": ">=2.0",：
+
+
+- 执行
+
+```angular2html
+
+composer update
+
+```
 
 - 配置数据库:conf//开发环境//对应模块.ini
 
