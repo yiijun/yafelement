@@ -122,6 +122,7 @@ composer update
 - 配置数据库:conf//开发环境//对应模块.ini
 
 
+
 ```$xslt
 [db]
 db.default.host = "127.0.0.1"
@@ -183,10 +184,10 @@ home
 
 ```
 <VirtualHost *:80>
-    DocumentRoot "D:\phpStudy\WWW\yafelement\public\admin"
+    DocumentRoot "D:\phpStudy\WWW\yafelement\public\home"
     ServerName home.yaf-element.com
     ServerAlias 
-  <Directory "D:\phpStudy\WWW\yafelement\public\admin">
+  <Directory "D:\phpStudy\WWW\yafelement\public\home">
       Options FollowSymLinks ExecCGI
       AllowOverride All
       Order allow,deny
@@ -207,8 +208,9 @@ server
 	listen 443 ssl http2;
     server_name admin.yaf-element.com;
     index index.php index.html index.htm default.php default.htm default.html;
-    root /www/wwwroot/admin.yaf-element.com/public/home;
+    root /www/wwwroot/admin.yaf-element.com/public/admin;
     
+    #https 配置 无需可以删除
     #SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则
     #error_page 404/404.html;
     ssl_certificate    /www/server/panel/vhost/cert/admin.yaf-element.com/fullchain.pem;
@@ -269,6 +271,7 @@ server
 home
 
 ```
+
 server
 {
     listen 80;
@@ -337,6 +340,8 @@ server
 
 以上配置根据自身情况修改即可；
 
+
+数据库后台账号：guest 密码：guest
 
 该版本已经集成了markdown并且组件化，增加腾讯云上传
 
