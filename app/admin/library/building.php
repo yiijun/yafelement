@@ -183,11 +183,13 @@ class Building extends Instance
      */
     public function renderSearch(array $search): string
     {
-        $searchString = 'table.filter(data => !search';
+        $searchString = 'table.filter(function(data){return !search';
+
         foreach ($search as $key => $value) {
-            $searchString .= ' || data.' . $value . '.toLowerCase().includes(search.toLowerCase())';
+            $searchString .= '|| data.'.$value.'.toLowerCase().indexOf(search.toLowerCase()) > -1';
         }
-        $searchString .= ')';
+
+        $searchString .= '})';
         return $searchString;
     }
 
@@ -239,9 +241,6 @@ class Building extends Instance
                     break;
                 case 'editor':
                     $html .= $this->setEditor($value, $name);
-                    break;
-                case 'tree':
-                    $html .= $this->setTree($value, $name);
                     break;
                 default:
                     break;
@@ -296,7 +295,7 @@ class Building extends Instance
      */
     public function setCascader($value, $name): string
     {
-        $html = '<el-form-item label="' . $value['title'] . '"><el-cascader :props=' . json_encode($value['prop']['props']) . ' v-model="' . $name . '.' . $value['key'] . '" placeholder="输入关键字搜索" :options=' . call_user_func_array($value['prop']['callback'], [])->{$value['prop']['function']}() . ' filterable></el-cascader></el-form-item>';
+        $html = '<el-form-item label="' . $value['title'] . '"><el-cascader :props=\'' . json_encode($value['prop']['props']) . '\' v-model="' . $name . '.' . $value['key'] . '" placeholder="输入关键字搜索" :options=\'' . call_user_func_array($value['prop']['callback'], [])->{$value['prop']['function']}() . '\' filterable></el-cascader></el-form-item>';
         return $html;
     }
 
@@ -325,9 +324,9 @@ class Building extends Instance
 
         //如果开启oss,文件将自动上传到oss，否则上传到本地
         if($oss_onoff == true) {
-            $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/upload/post/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false":on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
+            $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/upload/post/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false" :on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
         } else {
-            $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/upload/form/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false":on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
+            $html = '<el-form-item label="' . $value['title'] . '"><el-upload class="avatar-uploader" action="/upload/form/field/' . $value['key'] . '/name/' . $name . '" :show-file-list="false" :on-success="handleSuccess"><img v-if="' . $name . '.' . $value['key'] . '" :src="' . $name . '.' . $value['key'] . '" class="avatar"><i v-else class="el-icon-plus avatar-uploader-icon"></i></el-upload></el-form-item>';
         }
 
         return $html;

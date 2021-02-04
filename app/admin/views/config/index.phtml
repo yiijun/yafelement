@@ -19,7 +19,7 @@
     </div>
 </el-main>
 <?php Yaf\Loader::import(__DIR__.'/../foot.phtml');?>
-<script>
+<script type="text/babel">
     var vm = new Vue({
         el: '#app',
         data:<?php echo Building::getInstance()->renderForm('form',$fields,$validate);?>,
